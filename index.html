@@ -93,8 +93,18 @@
   <div class="cat-grid" id="cat-grid"></div>
 </div>
 
+<div class="card" style="margin-bottom:14px">
+  <h2>表一：到货计划-套件<span class="legend"><span><span class="dot" style="background:#16a34a"></span>实际</span><span><span class="dot" style="background:#f59e0b"></span>预估</span></span></h2>
+  <div class="table-wrap" style="max-height:200px;overflow:auto">
+    <table id="kit-table" style="font-size:11.5px;min-width:100%;border-collapse:separate;border-spacing:0">
+      <thead></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+</div>
+
 <div class="card">
-  <h2>到货计划明细表<span class="legend"><span><span class="dot" style="background:#16a34a"></span>实际</span><span><span class="dot" style="background:#f59e0b"></span>预估</span></span></h2>
+  <h2>表二：到货计划明-明细<span class="legend"><span><span class="dot" style="background:#16a34a"></span>实际</span><span><span class="dot" style="background:#f59e0b"></span>预估</span></span></h2>
   <div class="table-wrap" style="max-height:420px;overflow:auto">
     <table id="plan-table" style="font-size:11.5px;min-width:100%;border-collapse:separate;border-spacing:0">
       <thead></thead>
@@ -230,6 +240,53 @@ estMonths.forEach(m=>{const e=rows.reduce((s,r)=>s+(r[`${m}(预估)`]||0),0);tr+
 const te=rows.reduce((s,r)=>s+r['预估总计'],0);
 tr+=`<td class="num" style="${BORDER}background:#FFD966">${te}</td></tr>`;
 ptBody.innerHTML=rowsHtml+tr;
+
+// === 表一：到货计划-套件（逆变器/电池包维度，与表二同月份列结构）===
+const kt=DATA.plan_table;
+const ktHead=document.querySelector('#kit-table thead');
+const ktBody=document.querySelector('#kit-table tbody');
+// 套件数据：逆变器=单相逆变器+三相逆变器，电池包
+const kitRows=[
+  {label:'逆变器',unit:'套',cats:['单相逆变器','三相逆变器']},
+  {label:'电池包',unit:'台',cats:['电池包']},
+];
+// 表头（与表二同结构：品类|Model(这里改为维度|单位) + 实际月份 + 实际总计 + 预估月份 + 预估总计）
+let kh1='<tr style="position:sticky;top:0;z-index:10">';
+kh1+=`<th rowspan="2" style="${STICKY_L0}${BORDER}background:#1F4E79;color:#fff;width:80px;min-width:80px;max-width:80px;white-space:nowrap">维度</th>`;
+kh1+=`<th rowspan="2" style="${STICKY_L1}${BORDER}background:#1F4E79;color:#fff;white-space:nowrap;width:60px;min-width:60px">单位</th>`;
+kh1+=`<th colspan="${actMonths.length+1}" style="${BORDER}background:#C6EFCE;color:#000;font-size:13px;height:28px;text-align:center;vertical-align:middle">实际到货</th>`;
+kh1+=`<th colspan="${estMonths.length+1}" style="${BORDER}background:#FFD966;color:#000;font-size:13px;text-align:center;vertical-align:middle">预估到货</th></tr>`;
+let kh2='<tr style="position:sticky;top:28px;z-index:10">';
+actMonths.forEach(m=>{kh2+=`<th style="${BORDER}background:#C6EFCE;white-space:nowrap">${fmtM(m)}</th>`;});
+kh2+=`<th style="${BORDER}background:#C6EFCE;white-space:nowrap">总计</th>`;
+estMonths.forEach(m=>{kh2+=`<th style="${BORDER}background:#FFD966;white-space:nowrap">${fmtM(m)}</th>`;});
+kh2+=`<th style="${BORDER}background:#FFD966;white-space:nowrap">总计</th></tr>`;
+ktHead.innerHTML=kh1+kh2;
+// 数据行
+let kitHtml='';
+kitRows.forEach(kr=>{
+  // 汇总该维度所有品类的月度数据
+  let actVals=actMonths.map(m=>rows.filter(r=>kr.cats.includes(r.category)).reduce((s,r)=>s+(r[`${m}(实际)`]||0),0));
+  let estVals=estMonths.map(m=>rows.filter(r=>kr.cats.includes(r.category)).reduce((s,r)=>s+(r[`${m}(预估)`]||0),0));
+  const actTot=actVals.reduce((s,v)=>s+v,0);
+  const estTot=estVals.reduce((s,v)=>s+v,0);
+  kitHtml+=`<tr><td style="${STICKY_L0}${BORDER}background:#D9E1F2;font-weight:600;vertical-align:middle;width:80px;min-width:80px;max-width:80px;white-space:nowrap;text-align:center">${kr.label}</td>`;
+  kitHtml+=`<td style="${STICKY_L1}${BORDER}background:#D9E1F2;white-space:nowrap;width:60px;min-width:60px;text-align:center">${kr.unit}</td>`;
+  actVals.forEach(v=>{kitHtml+=`<td class="num" style="${BORDER}background:#E2EFDA;${v?'font-weight:600;color:#1a5631':'color:#bbb'}">${v||'·'}</td>`;});
+  kitHtml+=`<td class="num" style="${BORDER}background:#C6EFCE;font-weight:700">${actTot||''}</td>`;
+  estVals.forEach(v=>{kitHtml+=`<td class="num" style="${BORDER}background:#FCE4D6;${v?'font-weight:600;color:#9a4a00':'color:#bbb'}">${v||'·'}</td>`;});
+  kitHtml+=`<td class="num" style="${BORDER}background:#FFD966;font-weight:700">${estTot||''}</td></tr>`;
+});
+// 总计行
+let kitTr='<tr style="font-weight:700">';
+kitTr+=`<td colspan="2" style="${STICKY_L0}${BORDER}background:#1F4E79;color:#fff;text-align:center">总计</td>`;
+actMonths.forEach(m=>{const a=rows.filter(r=>['单相逆变器','三相逆变器','电池包'].includes(r.category)).reduce((s,r)=>s+(r[`${m}(实际)`]||0),0);kitTr+=`<td class="num" style="${BORDER}background:#C6EFCE">${a||''}</td>`;});
+const kta=rows.filter(r=>['单相逆变器','三相逆变器','电池包'].includes(r.category)).reduce((s,r)=>s+r['实际总计'],0);
+kitTr+=`<td class="num" style="${BORDER}background:#C6EFCE">${kta}</td>`;
+estMonths.forEach(m=>{const e=rows.filter(r=>['单相逆变器','三相逆变器','电池包'].includes(r.category)).reduce((s,r)=>s+(r[`${m}(预估)`]||0),0);kitTr+=`<td class="num" style="${BORDER}background:#FFD966">${e||''}</td>`;});
+const kte=rows.filter(r=>['单相逆变器','三相逆变器','电池包'].includes(r.category)).reduce((s,r)=>s+r['预估总计'],0);
+kitTr+=`<td class="num" style="${BORDER}background:#FFD966">${kte}</td></tr>`;
+ktBody.innerHTML=kitHtml+kitTr;
 
 // 说明（仅异常提示）
 let n='';
