@@ -149,13 +149,17 @@ document.getElementById('gen-time').textContent=DATA.generated_at;
 })();
 
 const months=DATA.summary.months;
-// 月度堆叠柱状图
+// 月度堆叠柱状图（按套件维度：逆变器+电池包）
+const cm2=DATA.category_monthly;
+const kitCats2=['单相逆变器','三相逆变器','电池包'];
+const kitActual=months.map((m,i)=>cm2.filter(c=>kitCats2.includes(c.category)).reduce((s,c)=>s+c.actual[i],0));
+const kitEstimate=months.map((m,i)=>cm2.filter(c=>kitCats2.includes(c.category)).reduce((s,c)=>s+c.estimate[i],0));
 new Chart(document.getElementById('chart-month'),{type:'bar',
   data:{labels:months,datasets:[
-    {label:'实际',data:DATA.summary.actual,backgroundColor:C_ACT,stack:'s'},
-    {label:'预估',data:DATA.summary.estimate,backgroundColor:C_EST,stack:'s'}]},
+    {label:'实际',data:kitActual,backgroundColor:C_ACT,stack:'s'},
+    {label:'预估',data:kitEstimate,backgroundColor:C_EST,stack:'s'}]},
   options:{responsive:true,maintainAspectRatio:false,
-    plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.dataset.label+': '+c.parsed.y.toLocaleString()+' 台'}}},
+    plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.dataset.label+': '+c.parsed.y.toLocaleString()+' 台/套'}}},
     scales:{x:{stacked:true,grid:{display:false}},y:{stacked:true,beginAtZero:true,ticks:{callback:v=>v.toLocaleString()}}}}});
 
 // 品类占比饼图
