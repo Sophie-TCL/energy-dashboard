@@ -75,15 +75,14 @@
   </table>
 </div>
 
-<div class="row2">
-  <div class="card">
-    <h2>每月到货分布（逆变器）</h2>
-    <div class="chart-box"><canvas id="chart-month"></canvas></div>
-  </div>
-  <div class="card">
-    <h2>品类到货占比</h2>
-    <div class="chart-box"><canvas id="chart-pie"></canvas></div>
-  </div>
+<div class="card" style="margin-bottom:14px">
+  <h2>需求端到货状态分布（已到港/在途/生产中）</h2>
+  <div class="chart-box" style="height:260px"><canvas id="chart-kpi" role="img" aria-label="需求端到货状态分布堆叠柱状图">需求端到货状态分布</canvas></div>
+</div>
+
+<div class="card" style="margin-bottom:14px">
+  <h2>每月到货分布（逆变器）</h2>
+  <div class="chart-box" style="height:240px"><canvas id="chart-month" role="img" aria-label="每月到货分布柱状图">每月到货分布</canvas></div>
 </div>
 
 <div class="card" style="margin-bottom:14px">
@@ -112,6 +111,11 @@
 <div class="card" style="margin-bottom:14px">
   <h2>各品类到货趋势（按月）</h2>
   <div class="cat-grid" id="cat-grid"></div>
+</div>
+
+<div class="card" style="margin-bottom:14px">
+  <h2>品类到货占比</h2>
+  <div class="chart-box" style="height:240px"><canvas id="chart-pie" role="img" aria-label="品类到货占比饼图">品类到货占比</canvas></div>
 </div>
 
 <div class="card">
@@ -178,6 +182,19 @@ document.getElementById('gen-time').textContent=DATA.generated_at;
   });
   document.getElementById('demand-tbody').innerHTML=html;
 })();
+
+// KPI趋势图（需求端到货状态分布，堆叠柱状图）
+const dg2=DATA.demand_by_group||[];
+new Chart(document.getElementById('chart-kpi'),{type:'bar',
+  data:{labels:dg2.map(g=>g.name),datasets:[
+    {label:'已到港',data:dg2.map(g=>g['已到港']),backgroundColor:'#16a34a'},
+    {label:'在途',data:dg2.map(g=>g['在途']),backgroundColor:'#f59e0b'},
+    {label:'生产中',data:dg2.map(g=>g['生产中']),backgroundColor:'#6b7280'},
+  ]},
+  options:{responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{position:'bottom',labels:{boxWidth:12,padding:10,font:{size:12}}},
+      tooltip:{callbacks:{label:c=>c.dataset.label+': '+c.parsed.y.toLocaleString()+' 台/套'}}},
+    scales:{x:{stacked:true,grid:{display:false}},y:{stacked:true,beginAtZero:true,ticks:{callback:v=>v.toLocaleString()}}}}});
 
 const months=DATA.summary.months;
 // 月度柱状图（仅按逆变器维度，不分实际/预估）
