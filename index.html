@@ -62,22 +62,6 @@
 </div>
 
 <div class="kpi-table-wrap">
-  <div style="font-size:14px;font-weight:700;color:#1F4E79;margin-bottom:8px;padding-left:2px">供应端</div>
-  <table class="kpi-table" id="kpi-table">
-    <thead>
-      <tr>
-        <th class="h-label">维度</th>
-        <th class="h-act" id="th-act">实际到货</th>
-        <th class="h-est" id="th-est">预估到货</th>
-        <th class="h-tbd" id="th-tbd">待排产</th>
-      </tr>
-    </thead>
-    <tbody id="kpi-tbody"></tbody>
-  </table>
-</div>
-
-<div class="kpi-table-wrap" style="margin-top:14px">
-  <div style="font-size:14px;font-weight:700;color:#1F4E79;margin-bottom:8px;padding-left:2px">需求端</div>
   <table class="kpi-table" id="demand-table">
     <thead>
       <tr>
@@ -138,42 +122,12 @@ const C_ACT='#16a34a', C_EST='#f59e0b';
 const CAT_COLORS=['#4F81BD','#C0504D','#9BBB59','#8064A2','#4BACC6','#F79646'];
 document.getElementById('gen-time').textContent=DATA.generated_at;
 
-// 列标题带订单月份备注
+// 列标题带订单月份备注（仅需求端）
 (function(){
-  const om=DATA.order_month_labels||{};
-  if(om['实际'])document.getElementById('th-act').textContent='实际到货（'+om['实际']+'）';
-  if(om['预估'])document.getElementById('th-est').textContent='预估到货（'+om['预估']+'）';
-  if(om['待排定'])document.getElementById('th-tbd').textContent='待排产（'+om['待排定']+'）';
   const dom=DATA.demand_om_labels||{};
   if(dom['已到港'])document.getElementById('th-arrived').textContent='已到港（'+dom['已到港']+'）';
   if(dom['在途'])document.getElementById('th-transit').textContent='在途（'+dom['在途']+'）';
   if(dom['生产中'])document.getElementById('th-production').textContent='生产中（'+dom['生产中']+'）';
-})();
-
-// KPI表格：逆变器(单相+三相) / 电池包，按实际/预估/待排产
-(function(){
-  const kg=DATA.kpi_by_group;
-  // 逆变器=单相逆变器+三相逆变器
-  const inv=kg.filter(g=>g.name.includes('逆变器'));
-  const bat=kg.filter(g=>g.name==='电池包');
-  const invAct=inv.reduce((s,g)=>s+g['实际'],0);
-  const invEst=inv.reduce((s,g)=>s+g['预估'],0);
-  const invTbd=inv.reduce((s,g)=>s+g['待排定'],0);
-  const batAct=bat.length?bat[0]['实际']:0;
-  const batEst=bat.length?bat[0]['预估']:0;
-  const batTbd=bat.length?bat[0]['待排定']:0;
-  const rows=[
-    {label:'逆变器',act:invAct,est:invEst,tbd:invTbd,unit:'套'},
-    {label:'电池包',act:batAct,est:batEst,tbd:batTbd,unit:'台'},
-  ];
-  let html='';
-  rows.forEach(r=>{
-    html+=`<tr><td class="row-label">${r.label}</td>`
-      +`<td class="v-act">${r.act.toLocaleString()}<span class="unit">${r.unit}</span></td>`
-      +`<td class="v-est">${r.est.toLocaleString()}<span class="unit">${r.unit}</span></td>`
-      +`<td class="v-tbd">${r.tbd.toLocaleString()}<span class="unit">${r.unit}</span></td></tr>`;
-  });
-  document.getElementById('kpi-tbody').innerHTML=html;
 })();
 
 // 需求端表格：逆变器/电池包，按已到港/在途/生产中
