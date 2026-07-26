@@ -301,8 +301,7 @@ ktBody.innerHTML=kitHtml+kitTr;
 
 // 说明（仅异常提示）
 let n='';
-if(DATA.pending_tbd>0)n+=`⚠️ 待排定 ${DATA.pending_tbd.toLocaleString()} 台：10月预测订单CT1-3柜暂无提货日，到货月待定。`;
-if(DATA.pending_etrfill>0)n+=` <br>⚠️ 待补ETR ${DATA.pending_etrfill.toLocaleString()} 台：ODP中26AUG006等行无日期，需在ODP源补全ETR后重跑(26AUG006的ETR=2026-08-11)。`;
+if(DATA.pending_etrfill>0)n+=`⚠️ 待补ETR ${DATA.pending_etrfill.toLocaleString()} 台：ODP中26AUG006等行无日期，需在ODP源补全ETR后重跑(26AUG006的ETR=2026-08-11)。`;
 document.getElementById('note').innerHTML=n;
 </script>
 </body>
