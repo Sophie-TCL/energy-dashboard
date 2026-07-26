@@ -77,9 +77,7 @@
 
 <div class="row2">
   <div class="card">
-    <h2>每月到货分布（实际 vs 预估）
-      <span class="legend"><span><span class="dot" style="background:var(--actual)"></span>实际</span><span><span class="dot" style="background:var(--est)"></span>预估</span></span>
-    </h2>
+    <h2>每月到货分布</h2>
     <div class="chart-box"><canvas id="chart-month"></canvas></div>
   </div>
   <div class="card">
@@ -89,7 +87,7 @@
 </div>
 
 <div class="card" style="margin-bottom:14px">
-  <h2>表一：到货计划-套件<span class="legend"><span><span class="dot" style="background:#16a34a"></span>实际</span><span><span class="dot" style="background:#f59e0b"></span>预估</span></span></h2>
+  <h2>表一：到货计划表-套件</h2>
   <div class="table-wrap" style="max-height:200px;overflow:auto">
     <table id="kit-table" style="font-size:11.5px;min-width:100%;border-collapse:separate;border-spacing:0">
       <thead></thead>
@@ -99,12 +97,12 @@
 </div>
 
 <div class="card" style="margin-bottom:14px">
-  <h2>各品类到货趋势（按月）<span class="legend"><span><span class="dot" style="background:var(--actual)"></span>实际</span><span><span class="dot" style="background:var(--est)"></span>预估</span></span></h2>
+  <h2>各品类到货趋势（按月）</h2>
   <div class="cat-grid" id="cat-grid"></div>
 </div>
 
 <div class="card">
-  <h2>表二：到货计划明-明细<span class="legend"><span><span class="dot" style="background:#16a34a"></span>实际</span><span><span class="dot" style="background:#f59e0b"></span>预估</span></span></h2>
+  <h2>表二：到货计划表-明细</h2>
   <div class="table-wrap" style="max-height:420px;overflow:auto">
     <table id="plan-table" style="font-size:11.5px;min-width:100%;border-collapse:separate;border-spacing:0">
       <thead></thead>
@@ -114,10 +112,10 @@
   <div class="note" id="note"></div>
 </div>
 
-<div class="footer">Energy+产品每月到货计划 Skill ｜ 数据来源：ODP订单发货进展表 + 为恒提货计划表 + Energy+映射表 ｜ 实际=绿 预估=橙</div>
+<div class="footer">Energy+产品每月到货计划 Skill ｜ 数据来源：ODP订单发货进展表 + 为恒提货计划表 + Energy+映射表</div>
 
 <script>
-const DATA = {"summary": {"months": ["2026-02", "2026-03", "2026-04", "2026-06", "2026-07", "2026-08", "2026-09", "2026-10", "2026-11", "2026-12", "2027-01"], "actual": [916, 122, 1724, 1154, 2153, 2892, 2730, 0, 0, 0, 0], "estimate": [0, 0, 0, 0, 0, 130, 1458, 5568, 3044, 2484, 552]}, "category_order": ["单相逆变器", "单相高压盒", "三相逆变器", "三相高压盒", "电池包", "电表"], "category_monthly": [{"category": "单相逆变器", "actual": [407, 0, 414, 398, 544, 296, 448, 0, 0, 0, 0], "estimate": [0, 0, 0, 0, 0, 25, 426, 1170, 390, 0, 0], "total": 4518}, {"category": "单相高压盒", "actual": [407, 34, 414, 400, 544, 520, 350, 0, 0, 0, 0], "estimate": [0, 0, 0, 0, 0, 25, 300, 1170, 390, 0, 0], "total": 4554}, {"category": "三相逆变器", "actual": [0, 34, 0, 2, 0, 198, 0, 0, 0, 0, 0], "estimate": [0, 0, 0, 0, 0, 0, 0, 0, 304, 0, 0], "total": 538}, {"category": "三相高压盒", "actual": [0, 0, 0, 0, 0, 198, 0, 0, 0, 0, 0], "estimate": [0, 0, 0, 0, 0, 0, 0, 0, 304, 0, 0], "total": 502}, {"category": "电池包", "actual": [0, 54, 804, 276, 828, 1500, 1932, 0, 0, 0, 0], "estimate": [0, 0, 0, 0, 0, 80, 552, 2760, 1656, 2484, 552], "total": 13478}, {"category": "电表", "actual": [102, 0, 92, 78, 237, 180, 0, 0, 0, 0, 0], "estimate": [0, 0, 0, 0, 0, 0, 180, 468, 0, 0, 0], "total": 1337}], "plan_table": {"months": ["2026-02", "2026-03", "2026-04", "2026-06", "2026-07", "2026-08", "2026-09", "2026-10", "2026-11", "2026-12", "2027-01"], "rows": [{"category": "单相逆变器", "model": "SP-ARSH-10kW-G1", "2026-02(实际)": 11, "2026-02(预估)": 0, "2026-03(实际)": 0, "2026-03(预估)": 0, "2026-04(实际)": 0, "2026-04(预估)": 0, "2026-06(实际)": 60, "2026-06(预估)": 0, "2026-07(实际)": 50, "2026-07(预估)": 0, "2026-08(实际)": 59, "2026-08(预估)": 16, "2026-09(实际)": 90, "2026-09(预估)": 0, "2026-10(实际)": 0, "2026-10(预估)": 131, "2026-11(实际)": 0, "2026-11(预估)": 0, "2026-12(实际)": 0, "2026-12(预估)": 0, "2027-01(实际)": 0, "2027-01(预估)": 0, "实际总计": 270, "预估总计": 147}, {"category": "单相逆变器", "model": "SP-ARSH-5kW-G1", "2026-02(实际)": 0, "2026-02(预估)": 0, "2026-03(实际)": 0, "2026-03(预估)": 0, "2026-04(实际)": 103, "2026-04(预估)": 0, "2026-06(实际)": 0, "2026-06(预估)": 0, "2026-07(实际)": 0, "2026-07(预估)": 0, "2026-08(实际)": 25, "2026-08(预估)": 0, "2026-09(实际)": 30, "2026-09(预估)": 0, "2026-10(实际)": 0, "2026-10(预估)": 55, "2026-11(实际)": 0, "2026-11(预估)": 0, "2026-12(实际)": 0, "2026-12(预估)": 0, "2027-01(实际)": 0, "2027-01(预估)": 0, "实际总计": 158, "预估总计": 55}, {"category": "单相逆变器", "model": "SP-ARSH-6kW-G1", "2026-02(实际)": 334, "2026-02(预估)": 0, "2026-03(实际)": 0, "2026-03(预估)": 0, "2026-04(实际)": 305, "2026-04(预估)": 0, "2026-06(实际)": 338, "2026-06(预估)": 0, "2026-07(实际)": 494, "2026-07(预估)": 0, "2026-08(实际)": 212, "2026-08(预估)": 9, "2026-09(实际)": 328, "2026-09(预估)": 426, "2026-10(实际)": 0, "2026-10(预估)": 984, "2026-11(实际)": 0, "2026-11(预估)": 390, "2026-12(实际)": 0, "2026-12(预估)": 0, "2027-01(实际)": 0, "2027-01(预估)": 0, "实际总计": 2011, "预估总计": 1809}, {"category": "单相逆变器", "model": "SP-ARSH-8kW-G1", "2026-02(实际)": 62, "2026-02(预估)": 0, "2026-03(实际)": 0, "2026-03(预估)": 0, "2026-04(实际)": 6, "2026-04(预估)": 0, "2026-06(实际)": 0, "2026-06(预估)": 0, "2026-07(实际)": 0, "2026-07(预估)": 0, "2026-08(实际)": 0, "2026-08(预估)": 0, "2026-09(实际)": 0, "2026-09(预估)": 0, "2026-10(实际)": 0, "2026-10(预估)": 0, "2026-11(实际)": 0, "2026-11(预估)": 0, "2026-12(实际)": 0, "2026-12(预估)": 0, "2027-01(实际)": 0, "2027-01(预估)": 0, "实际总计": 68, "预估总计": 0}, {"category": "单相高压盒", "model": "SP-RAH-HVB571-G1", "2026-02(实际)": 407, "2026-02(预估)": 0, "2026-03(实际)": 34, "2026-03(预估)": 0, "2026-04(实际)": 414, "2026-04(预估)": 0, "2026-06(实际)": 400, "2026-06(预估)": 0, "2026-07(实际)": 544, "2026-07(预估)": 0, "2026-08(实际)": 520, "2026-08(预估)": 25, "2026-09(实际)": 350, "2026-09(预估)": 300, "2026-10(实际)": 0, "2026-10(预估)": 1170, "2026-11(实际)": 0, "2026-11(预估)": 390, "2026-12(实际)": 0, "2026-12(预估)": 0, "2027-01(实际)": 0, "2027-01(预估)": 0, "实际总计": 2669, "预估总计": 1885}, {"category": "三相逆变器", "model": "SP-SRTH-10kW-G1", "2026-02(实际)": 0, "2026-02(预估)": 0, "2026-03(实际)": 0, "2026-03(预估)": 0, "2026-04(实际)": 0, "2026-04(预估)": 0, "2026-06(实际)": 0, "2026-06(预估)": 0, "2026-07(实际)": 0, "2026-07(预估)": 0, "2026-08(实际)": 132, "2026-08(预估)": 0, "2026-09(实际)": 0, "2026-09(预估)": 0, "2026-10(实际)": 0, "2026-10(预估)": 0, "2026-11(实际)": 0, "2026-11(预估)": 202, "2026-12(实际)": 0, "2026-12(预估)": 0, "2027-01(实际)": 0, "2027-01(预估)": 0, "实际总计": 132, "预估总计": 202}, {"category": "三相逆变器", "model": "SP-SRTH-13kW-G1", "2026-02(实际)": 0, "2026-02(预估)": 0, "2026-03(实际)": 0, "2026-03(预估)": 0, "2026-04(实际)": 0, "2026-04(预估)": 0, "2026-06(实际)": 0, "2026-06(预估)": 0, "2026-07(实际)": 0, "2026-07(预估)": 0, "2026-08(实际)": 66, "2026-08(预估)": 0, "2026-09(实际)": 0, "2026-09(预估)": 0, "2026-10(实际)": 0, "2026-10(预估)": 0, "2026-11(实际)": 0, "2026-11(预估)": 102, "2026-12(实际)": 0, "2026-12(预估)": 0, "2027-01(实际)": 0, "2027-01(预估)": 0, "实际总计": 66, "预估总计": 102}, {"category": "三相逆变器", "model": "SP-SRTH-8kW-G1", "2026-02(实际)": 0, "2026-02(预估)": 0, "2026-03(实际)": 34, "2026-03(预估)": 0, "2026-04(实际)": 0, "2026-04(预估)": 0, "2026-06(实际)": 2, "2026-06(预估)": 0, "2026-07(实际)": 0, "2026-07(预估)": 0, "2026-08(实际)": 0, "2026-08(预估)": 0, "2026-09(实际)": 0, "2026-09(预估)": 0, "2026-10(实际)": 0, "2026-10(预估)": 0, "2026-11(实际)": 0, "2026-11(预估)": 0, "2026-12(实际)": 0, "2026-12(预估)": 0, "2027-01(实际)": 0, "2027-01(预估)": 0, "实际总计": 36, "预估总计": 0}, {"category": "三相高压盒", "model": "SP-RH-HVB571-G1", "2026-02(实际)": 0, "2026-02(预估)": 0, "2026-03(实际)": 0, "2026-03(预估)": 0, "2026-04(实际)": 0, "2026-04(预估)": 0, "2026-06(实际)": 0, "2026-06(预估)": 0, "2026-07(实际)": 0, "2026-07(预估)": 0, "2026-08(实际)": 198, "2026-08(预估)": 0, "2026-09(实际)": 0, "2026-09(预估)": 0, "2026-10(实际)": 0, "2026-10(预估)": 0, "2026-11(实际)": 0, "2026-11(预估)": 304, "2026-12(实际)": 0, "2026-12(预估)": 0, "2027-01(实际)": 0, "2027-01(预估)": 0, "实际总计": 198, "预估总计": 304}, {"category": "电池包", "model": "SP-RH-B5K-G1", "2026-02(实际)": 0, "2026-02(预估)": 0, "2026-03(实际)": 54, "2026-03(预估)": 0, "2026-04(实际)": 804, "2026-04(预估)": 0, "2026-06(实际)": 276, "2026-06(预估)": 0, "2026-07(实际)": 828, "2026-07(预估)": 0, "2026-08(实际)": 1500, "2026-08(预估)": 80, "2026-09(实际)": 1932, "2026-09(预估)": 552, "2026-10(实际)": 0, "2026-10(预估)": 2760, "2026-11(实际)": 0, "2026-11(预估)": 1656, "2026-12(实际)": 0, "2026-12(预估)": 2484, "2027-01(实际)": 0, "2027-01(预估)": 552, "实际总计": 5394, "预估总计": 8084}, {"category": "电表", "model": "SP-ARSH-MC-G1", "2026-02(实际)": 78, "2026-02(预估)": 0, "2026-03(实际)": 0, "2026-03(预估)": 0, "2026-04(实际)": 82, "2026-04(预估)": 0, "2026-06(实际)": 78, "2026-06(预估)": 0, "2026-07(实际)": 165, "2026-07(预估)": 0, "2026-08(实际)": 180, "2026-08(预估)": 0, "2026-09(实际)": 0, "2026-09(预估)": 180, "2026-10(实际)": 0, "2026-10(预估)": 360, "2026-11(实际)": 0, "2026-11(预估)": 0, "2026-12(实际)": 0, "2026-12(预估)": 0, "2027-01(实际)": 0, "2027-01(预估)": 0, "实际总计": 583, "预估总计": 540}, {"category": "电表", "model": "SP-SRTH-MC-G1", "2026-02(实际)": 24, "2026-02(预估)": 0, "2026-03(实际)": 0, "2026-03(预估)": 0, "2026-04(实际)": 10, "2026-04(预估)": 0, "2026-06(实际)": 0, "2026-06(预估)": 0, "2026-07(实际)": 72, "2026-07(预估)": 0, "2026-08(实际)": 0, "2026-08(预估)": 0, "2026-09(实际)": 0, "2026-09(预估)": 0, "2026-10(实际)": 0, "2026-10(预估)": 108, "2026-11(实际)": 0, "2026-11(预估)": 0, "2026-12(实际)": 0, "2026-12(预估)": 0, "2027-01(实际)": 0, "2027-01(预估)": 0, "实际总计": 106, "预估总计": 108}]}, "sku_detail": [{"sku": "GF0700001010", "model": "SP-ARSH-6kW-G1", "category": "单相逆变器", "实际": 2011, "预估": 1809, "合计": 3820}, {"sku": "GF0700001012", "model": "SP-ARSH-10kW-G1", "category": "单相逆变器", "实际": 270, "预估": 147, "合计": 417}, {"sku": "GF0700000085", "model": "SP-ARSH-5kW-G1", "category": "单相逆变器", "实际": 158, "预估": 55, "合计": 213}, {"sku": "GF0700001011", "model": "SP-ARSH-8kW-G1", "category": "单相逆变器", "实际": 68, "预估": 0, "合计": 68}, {"sku": "GF0700000973", "model": "SP-RAH-HVB571-G1", "category": "单相高压盒", "实际": 2633, "预估": 1885, "合计": 4518}, {"sku": "GF0700000089", "model": "SP-RAH-HVB571-G1", "category": "单相高压盒", "实际": 36, "预估": 0, "合计": 36}, {"sku": "GF0700001006", "model": "SP-SRTH-10kW-G1", "category": "三相逆变器", "实际": 132, "预估": 202, "合计": 334}, {"sku": "GF0700001008", "model": "SP-SRTH-13kW-G1", "category": "三相逆变器", "实际": 66, "预估": 102, "合计": 168}, {"sku": "GF0700000087", "model": "SP-SRTH-8kW-G1", "category": "三相逆变器", "实际": 36, "预估": 0, "合计": 36}, {"sku": "GF0700000971", "model": "SP-RH-HVB571-G1", "category": "三相高压盒", "实际": 198, "预估": 304, "合计": 502}, {"sku": "GF0700000940", "model": "SP-RH-B5K-G1", "category": "电池包", "实际": 5360, "预估": 8084, "合计": 13444}, {"sku": "GF0700000040", "model": "SP-RH-B5K-G1", "category": "电池包", "实际": 34, "预估": 0, "合计": 34}, {"sku": "GF0700001437", "model": "SP-ARSH-MC-G1", "category": "电表", "实际": 583, "预估": 540, "合计": 1123}, {"sku": "GF0700001436", "model": "SP-SRTH-MC-G1", "category": "电表", "实际": 106, "预估": 108, "合计": 214}], "category_detail": [{"产品中类": "单相逆变器", "实际": 2507, "预估": 2011}, {"产品中类": "单相高压盒", "实际": 2669, "预估": 1885}, {"产品中类": "三相逆变器", "实际": 234, "预估": 304}, {"产品中类": "三相高压盒", "实际": 198, "预估": 304}, {"产品中类": "电池包", "实际": 5394, "预估": 8084}, {"产品中类": "电表", "实际": 689, "预估": 648}], "pending_tbd": 888, "pending_etrfill": 0, "totals": {"实际": 11691, "预估": 13236, "合计": 24927}, "generated_at": "2026-07-23 15:14", "kpi_by_group": [{"name": "单相逆变器", "实际": 2507, "预估": 2011, "合计": 4518, "待排定": 390}, {"name": "三相逆变器", "实际": 234, "预估": 304, "合计": 538, "待排定": 0}, {"name": "电池包", "实际": 5394, "预估": 8084, "合计": 13478, "待排定": 0}], "order_month_labels": {"实际": "截至7月订单", "预估": "截至10月订单", "待排定": "10月订单"}, "demand_by_group": [{"name": "逆变器", "已到港": 1479, "在途": 1262, "生产中": 2705}, {"name": "电池包", "已到港": 1686, "在途": 3156, "生产中": 8636}], "demand_om_labels": {"已到港": "截至4月订单", "在途": "截至7月订单", "生产中": "截至10月订单"}};
+const DATA = {"summary": {"months": ["2026-02", "2026-03", "2026-04", "2026-06", "2026-07", "2026-08", "2026-09", "2026-10", "2026-11", "2026-12"], "total": [916, 122, 1724, 1154, 2153, 3022, 4188, 5828, 2784, 3036]}, "kpi_by_group": [{"name": "单相逆变器", "实际": 2507, "预估": 2011, "合计": 4518, "待排定": 390}, {"name": "三相逆变器", "实际": 234, "预估": 304, "合计": 538, "待排定": 0}, {"name": "电池包", "实际": 5394, "预估": 8084, "合计": 13478, "待排定": 0}], "category_order": ["单相逆变器", "单相高压盒", "三相逆变器", "三相高压盒", "电池包", "电表"], "category_monthly": [{"category": "单相逆变器", "data": [407, 0, 414, 398, 544, 321, 874, 1300, 260, 0], "total": 4518}, {"category": "单相高压盒", "data": [407, 34, 414, 400, 544, 545, 650, 1300, 260, 0], "total": 4554}, {"category": "三相逆变器", "data": [0, 34, 0, 2, 0, 198, 0, 0, 304, 0], "total": 538}, {"category": "三相高压盒", "data": [0, 0, 0, 0, 0, 198, 0, 0, 304, 0], "total": 502}, {"category": "电池包", "data": [0, 54, 804, 276, 828, 1580, 2484, 2760, 1656, 3036], "total": 13478}, {"category": "电表", "data": [102, 0, 92, 78, 237, 180, 180, 468, 0, 0], "total": 1337}], "plan_table": {"months": ["2026-02", "2026-03", "2026-04", "2026-06", "2026-07", "2026-08", "2026-09", "2026-10", "2026-11", "2026-12"], "rows": [{"category": "单相逆变器", "model": "SP-ARSH-10kW-G1", "2026-02": 11, "2026-03": 0, "2026-04": 0, "2026-06": 60, "2026-07": 50, "2026-08": 75, "2026-09": 90, "2026-10": 131, "2026-11": 0, "2026-12": 0, "总计": 417}, {"category": "单相逆变器", "model": "SP-ARSH-5kW-G1", "2026-02": 0, "2026-03": 0, "2026-04": 103, "2026-06": 0, "2026-07": 0, "2026-08": 25, "2026-09": 30, "2026-10": 55, "2026-11": 0, "2026-12": 0, "总计": 213}, {"category": "单相逆变器", "model": "SP-ARSH-6kW-G1", "2026-02": 334, "2026-03": 0, "2026-04": 305, "2026-06": 338, "2026-07": 494, "2026-08": 221, "2026-09": 754, "2026-10": 1114, "2026-11": 260, "2026-12": 0, "总计": 3820}, {"category": "单相逆变器", "model": "SP-ARSH-8kW-G1", "2026-02": 62, "2026-03": 0, "2026-04": 6, "2026-06": 0, "2026-07": 0, "2026-08": 0, "2026-09": 0, "2026-10": 0, "2026-11": 0, "2026-12": 0, "总计": 68}, {"category": "单相高压盒", "model": "SP-RAH-HVB571-G1", "2026-02": 407, "2026-03": 34, "2026-04": 414, "2026-06": 400, "2026-07": 544, "2026-08": 545, "2026-09": 650, "2026-10": 1300, "2026-11": 260, "2026-12": 0, "总计": 4554}, {"category": "三相逆变器", "model": "SP-SRTH-10kW-G1", "2026-02": 0, "2026-03": 0, "2026-04": 0, "2026-06": 0, "2026-07": 0, "2026-08": 132, "2026-09": 0, "2026-10": 0, "2026-11": 202, "2026-12": 0, "总计": 334}, {"category": "三相逆变器", "model": "SP-SRTH-13kW-G1", "2026-02": 0, "2026-03": 0, "2026-04": 0, "2026-06": 0, "2026-07": 0, "2026-08": 66, "2026-09": 0, "2026-10": 0, "2026-11": 102, "2026-12": 0, "总计": 168}, {"category": "三相逆变器", "model": "SP-SRTH-8kW-G1", "2026-02": 0, "2026-03": 34, "2026-04": 0, "2026-06": 2, "2026-07": 0, "2026-08": 0, "2026-09": 0, "2026-10": 0, "2026-11": 0, "2026-12": 0, "总计": 36}, {"category": "三相高压盒", "model": "SP-RH-HVB571-G1", "2026-02": 0, "2026-03": 0, "2026-04": 0, "2026-06": 0, "2026-07": 0, "2026-08": 198, "2026-09": 0, "2026-10": 0, "2026-11": 304, "2026-12": 0, "总计": 502}, {"category": "电池包", "model": "SP-RH-B5K-G1", "2026-02": 0, "2026-03": 54, "2026-04": 804, "2026-06": 276, "2026-07": 828, "2026-08": 1580, "2026-09": 2484, "2026-10": 2760, "2026-11": 1656, "2026-12": 3036, "总计": 13478}, {"category": "电表", "model": "SP-ARSH-MC-G1", "2026-02": 78, "2026-03": 0, "2026-04": 82, "2026-06": 78, "2026-07": 165, "2026-08": 180, "2026-09": 180, "2026-10": 360, "2026-11": 0, "2026-12": 0, "总计": 1123}, {"category": "电表", "model": "SP-SRTH-MC-G1", "2026-02": 24, "2026-03": 0, "2026-04": 10, "2026-06": 0, "2026-07": 72, "2026-08": 0, "2026-09": 0, "2026-10": 108, "2026-11": 0, "2026-12": 0, "总计": 214}]}, "sku_detail": [{"sku": "GF0700001010", "model": "SP-ARSH-6kW-G1", "category": "单相逆变器", "实际": 2011, "预估": 1809, "合计": 3820}, {"sku": "GF0700001012", "model": "SP-ARSH-10kW-G1", "category": "单相逆变器", "实际": 270, "预估": 147, "合计": 417}, {"sku": "GF0700000085", "model": "SP-ARSH-5kW-G1", "category": "单相逆变器", "实际": 158, "预估": 55, "合计": 213}, {"sku": "GF0700001011", "model": "SP-ARSH-8kW-G1", "category": "单相逆变器", "实际": 68, "预估": 0, "合计": 68}, {"sku": "GF0700000973", "model": "SP-RAH-HVB571-G1", "category": "单相高压盒", "实际": 2633, "预估": 1885, "合计": 4518}, {"sku": "GF0700000089", "model": "SP-RAH-HVB571-G1", "category": "单相高压盒", "实际": 36, "预估": 0, "合计": 36}, {"sku": "GF0700001006", "model": "SP-SRTH-10kW-G1", "category": "三相逆变器", "实际": 132, "预估": 202, "合计": 334}, {"sku": "GF0700001008", "model": "SP-SRTH-13kW-G1", "category": "三相逆变器", "实际": 66, "预估": 102, "合计": 168}, {"sku": "GF0700000087", "model": "SP-SRTH-8kW-G1", "category": "三相逆变器", "实际": 36, "预估": 0, "合计": 36}, {"sku": "GF0700000971", "model": "SP-RH-HVB571-G1", "category": "三相高压盒", "实际": 198, "预估": 304, "合计": 502}, {"sku": "GF0700000940", "model": "SP-RH-B5K-G1", "category": "电池包", "实际": 5360, "预估": 8084, "合计": 13444}, {"sku": "GF0700000040", "model": "SP-RH-B5K-G1", "category": "电池包", "实际": 34, "预估": 0, "合计": 34}, {"sku": "GF0700001437", "model": "SP-ARSH-MC-G1", "category": "电表", "实际": 583, "预估": 540, "合计": 1123}, {"sku": "GF0700001436", "model": "SP-SRTH-MC-G1", "category": "电表", "实际": 106, "预估": 108, "合计": 214}], "category_detail": [{"产品中类": "单相逆变器", "实际": 2507, "预估": 2011}, {"产品中类": "单相高压盒", "实际": 2669, "预估": 1885}, {"产品中类": "三相逆变器", "实际": 234, "预估": 304}, {"产品中类": "三相高压盒", "实际": 198, "预估": 304}, {"产品中类": "电池包", "实际": 5394, "预估": 8084}, {"产品中类": "电表", "实际": 689, "预估": 648}], "pending_tbd": 888, "pending_etrfill": 0, "order_month_labels": {"实际": "截至7月订单", "预估": "截至10月订单", "待排定": "10月订单"}, "demand_by_group": [{"name": "单相逆变器", "已到港": 1443, "在途": 1064, "生产中": 2401}, {"name": "三相逆变器", "已到港": 36, "在途": 198, "生产中": 304}, {"name": "电池包", "已到港": 1686, "在途": 3156, "生产中": 8636}], "demand_om_labels": {"已到港": "截至4月订单", "在途": "截至7月订单", "生产中": "10月订单"}, "totals": {"实际": 11691, "预估": 13236, "合计": 24927}, "generated_at": "2026-07-26 16:27"};
 const C_ACT='#16a34a', C_EST='#f59e0b';
 const CAT_COLORS=['#4F81BD','#C0504D','#9BBB59','#8064A2','#4BACC6','#F79646'];
 document.getElementById('gen-time').textContent=DATA.generated_at;
@@ -156,18 +154,16 @@ document.getElementById('gen-time').textContent=DATA.generated_at;
 })();
 
 const months=DATA.summary.months;
-// 月度堆叠柱状图（按套件维度：逆变器+电池包）
+// 月度柱状图（按套件维度：逆变器+电池包，不分实际/预估）
 const cm2=DATA.category_monthly;
 const kitCats2=['单相逆变器','三相逆变器','电池包'];
-const kitActual=months.map((m,i)=>cm2.filter(c=>kitCats2.includes(c.category)).reduce((s,c)=>s+c.actual[i],0));
-const kitEstimate=months.map((m,i)=>cm2.filter(c=>kitCats2.includes(c.category)).reduce((s,c)=>s+c.estimate[i],0));
+const kitTotal=months.map((m,i)=>cm2.filter(c=>kitCats2.includes(c.category)).reduce((s,c)=>s+c.data[i],0));
 new Chart(document.getElementById('chart-month'),{type:'bar',
   data:{labels:months,datasets:[
-    {label:'实际',data:kitActual,backgroundColor:C_ACT,stack:'s'},
-    {label:'预估',data:kitEstimate,backgroundColor:C_EST,stack:'s'}]},
+    {label:'到货量',data:kitTotal,backgroundColor:'#4F81BD'}]},
   options:{responsive:true,maintainAspectRatio:false,
-    plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.dataset.label+': '+c.parsed.y.toLocaleString()+' 台/套'}}},
-    scales:{x:{stacked:true,grid:{display:false}},y:{stacked:true,beginAtZero:true,ticks:{callback:v=>v.toLocaleString()}}}}});
+    plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.parsed.y.toLocaleString()+' 台/套'}}},
+    scales:{x:{grid:{display:false}},y:{beginAtZero:true,ticks:{callback:v=>v.toLocaleString()}}}}});
 
 // 品类占比饼图
 const cm=DATA.category_monthly;
@@ -177,7 +173,7 @@ new Chart(document.getElementById('chart-pie'),{type:'doughnut',
     plugins:{legend:{position:'right',labels:{boxWidth:10,boxHeight:10,padding:10,font:{size:11}}},
     tooltip:{callbacks:{label:c=>c.label+': '+c.parsed.toLocaleString()+' 台 ('+(c.parsed/DATA.totals['合计']*100).toFixed(1)+'%)'}}}}});
 
-// 各品类月度柱状图(3x2网格)
+// 各品类月度柱状图(3x2网格，不分实际/预估)
 const grid=document.getElementById('cat-grid');
 cm.forEach((c,idx)=>{
   const d=document.createElement('div');d.className='cat-card';
@@ -185,15 +181,14 @@ cm.forEach((c,idx)=>{
   grid.appendChild(d);
   new Chart(d.querySelector('canvas'),{type:'bar',
     data:{labels:months,datasets:[
-      {label:'实际',data:c.actual,backgroundColor:C_ACT,stack:'s'},
-      {label:'预估',data:c.estimate,backgroundColor:C_EST,stack:'s'}]},
+      {label:'到货量',data:c.data,backgroundColor:CAT_COLORS[idx]}]},
     options:{responsive:true,maintainAspectRatio:false,
-      plugins:{legend:{display:false},tooltip:{callbacks:{label:x=>x.dataset.label+': '+x.parsed.y.toLocaleString()+' 台'}}},
-      scales:{x:{stacked:true,grid:{display:false},ticks:{font:{size:9},maxRotation:0,autoSkip:true}},
-        y:{stacked:true,beginAtZero:true,ticks:{font:{size:9},callback:v=>v>=1000?(v/1000)+'k':v}}}}});
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:x=>x.parsed.y.toLocaleString()+' 台'}}},
+      scales:{x:{grid:{display:false},ticks:{font:{size:9},maxRotation:0,autoSkip:true}},
+        y:{beginAtZero:true,ticks:{font:{size:9},callback:v=>v>=1000?(v/1000)+'k':v}}}}});
 });
 
-// 到货计划明细表（品类/Model行 × 月份实际/预估列，与Excel同结构）
+// 到货计划明细表（品类/Model行 × 月份列，不分实际/预估）
 const pt=DATA.plan_table;
 const pmonths=pt.months;
 const ptHead=document.querySelector('#plan-table thead');
@@ -202,26 +197,19 @@ const rows=pt.rows;
 // 月份格式转换 2026-02 -> Feb-26
 const MON3=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 function fmtM(m){const [y,mo]=m.split('-');return MON3[parseInt(mo)-1]+'-'+y.slice(2);}
-// 筛选有数据的月份（实际或预估任一>0）
-const actMonths=pmonths.filter(m=>rows.some(r=>r[`${m}(实际)`]>0));
-const estMonths=pmonths.filter(m=>rows.some(r=>r[`${m}(预估)`]>0));
+// 筛选有数据的月份
+const dataMonths=pmonths.filter(m=>rows.some(r=>r[m]>0));
 const STICKY_L0='position:sticky;left:0;z-index:6;';
 const STICKY_L1='position:sticky;left:80px;z-index:6;';
-const STICKY_T='position:sticky;top:0;z-index:4;';
 const BORDER='border:1px solid #fff;';
-// 表头：双行（实际/预估大标题 + 月份小标题），tr级sticky冻结
-let htr1='<tr style="position:sticky;top:0;z-index:10">';
-htr1+=`<th rowspan="2" style="${STICKY_L0}${BORDER}background:#1F4E79;color:#fff;width:80px;min-width:80px;max-width:80px;white-space:nowrap">品类</th>`;
-htr1+=`<th rowspan="2" style="${STICKY_L1}${BORDER}background:#1F4E79;color:#fff;white-space:nowrap;width:180px;min-width:180px">Model</th>`;
-htr1+=`<th colspan="${actMonths.length+1}" style="${BORDER}background:#C6EFCE;color:#000;font-size:13px;height:28px;text-align:center;vertical-align:middle">实际到货</th>`;
-htr1+=`<th colspan="${estMonths.length+1}" style="${BORDER}background:#FFD966;color:#000;font-size:13px;text-align:center;vertical-align:middle">预估到货</th></tr>`;
-let htr2='<tr style="position:sticky;top:28px;z-index:10">';
-actMonths.forEach(m=>{htr2+=`<th style="${BORDER}background:#C6EFCE;white-space:nowrap">${fmtM(m)}</th>`;});
-htr2+=`<th style="${BORDER}background:#C6EFCE;white-space:nowrap">总计</th>`;
-estMonths.forEach(m=>{htr2+=`<th style="${BORDER}background:#FFD966;white-space:nowrap">${fmtM(m)}</th>`;});
-htr2+=`<th style="${BORDER}background:#FFD966;white-space:nowrap">总计</th></tr>`;
-ptHead.innerHTML=htr1+htr2;
-// 数据行（品类合并rowspan，空单元格填区域底色）
+// 表头：单行（品类+Model+月份+总计）
+let htr='<tr style="position:sticky;top:0;z-index:10">';
+htr+=`<th style="${STICKY_L0}${BORDER}background:#1F4E79;color:#fff;width:80px;min-width:80px;max-width:80px;white-space:nowrap">品类</th>`;
+htr+=`<th style="${STICKY_L1}${BORDER}background:#1F4E79;color:#fff;white-space:nowrap;width:180px;min-width:180px">Model</th>`;
+dataMonths.forEach(m=>{htr+=`<th style="${BORDER}background:#1F4E79;color:#fff;white-space:nowrap">${fmtM(m)}</th>`;});
+htr+=`<th style="${BORDER}background:#1F4E79;color:#fff;white-space:nowrap">总计</th></tr>`;
+ptHead.innerHTML=htr;
+// 数据行（品类合并rowspan，浅蓝底色）
 let rowsHtml='';let curCat=null;let catCount=0;let catPlaceholder='';
 for(let i=0;i<rows.length;i++){
   const r=rows[i];
@@ -235,21 +223,16 @@ for(let i=0;i<rows.length;i++){
     rowsHtml+='<tr>';
   }
   rowsHtml+=`<td style="${STICKY_L1}${BORDER}background:#D9E1F2;white-space:nowrap;width:180px;min-width:180px">${r.model}</td>`;
-  actMonths.forEach(m=>{const v=r[`${m}(实际)`];rowsHtml+=`<td class="num" style="${BORDER}background:#E2EFDA;${v?'font-weight:600;color:#1a5631':'color:#bbb'}">${v||'·'}</td>`;});
-  rowsHtml+=`<td class="num" style="${BORDER}background:#C6EFCE;font-weight:700">${r['实际总计']||''}</td>`;
-  estMonths.forEach(m=>{const v=r[`${m}(预估)`];rowsHtml+=`<td class="num" style="${BORDER}background:#FCE4D6;${v?'font-weight:600;color:#9a4a00':'color:#bbb'}">${v||'·'}</td>`;});
-  rowsHtml+=`<td class="num" style="${BORDER}background:#FFD966;font-weight:700">${r['预估总计']||''}</td></tr>`;
+  dataMonths.forEach(m=>{const v=r[m];rowsHtml+=`<td class="num" style="${BORDER}background:#D9E1F2;${v?'font-weight:600;color:#1F2937':'color:#bbb'}">${v||'·'}</td>`;});
+  rowsHtml+=`<td class="num" style="${BORDER}background:#B4C6E7;font-weight:700">${r['总计']||''}</td></tr>`;
 }
 if(catCount>1){rowsHtml=rowsHtml.replace(catPlaceholder,catCount);}
-// 总计行（品类+Model合并，深蓝底白字与表头一致；实际部分绿色、预估部分橙色）
+// 总计行
 let tr='<tr style="font-weight:700">';
 tr+=`<td colspan="2" style="${STICKY_L0}${BORDER}background:#1F4E79;color:#fff;text-align:center">总计</td>`;
-actMonths.forEach(m=>{const a=rows.reduce((s,r)=>s+(r[`${m}(实际)`]||0),0);tr+=`<td class="num" style="${BORDER}background:#C6EFCE">${a||''}</td>`;});
-const ta=rows.reduce((s,r)=>s+r['实际总计'],0);
-tr+=`<td class="num" style="${BORDER}background:#C6EFCE">${ta}</td>`;
-estMonths.forEach(m=>{const e=rows.reduce((s,r)=>s+(r[`${m}(预估)`]||0),0);tr+=`<td class="num" style="${BORDER}background:#FFD966">${e||''}</td>`;});
-const te=rows.reduce((s,r)=>s+r['预估总计'],0);
-tr+=`<td class="num" style="${BORDER}background:#FFD966">${te}</td></tr>`;
+dataMonths.forEach(m=>{const v=rows.reduce((s,r)=>s+(r[m]||0),0);tr+=`<td class="num" style="${BORDER}background:#B4C6E7">${v||''}</td>`;});
+const tt=rows.reduce((s,r)=>s+r['总计'],0);
+tr+=`<td class="num" style="${BORDER}background:#1F4E79;color:#fff">${tt}</td></tr>`;
 ptBody.innerHTML=rowsHtml+tr;
 
 // === 表一：到货计划-套件（逆变器/电池包维度，与表二同月份列结构）===
@@ -261,42 +244,29 @@ const kitRows=[
   {label:'逆变器',unit:'套',cats:['单相逆变器','三相逆变器']},
   {label:'电池包',unit:'台',cats:['电池包']},
 ];
-// 表头（与表二同结构：品类|Model(这里改为维度|单位) + 实际月份 + 实际总计 + 预估月份 + 预估总计）
-let kh1='<tr style="position:sticky;top:0;z-index:10">';
-kh1+=`<th rowspan="2" style="${STICKY_L0}${BORDER}background:#1F4E79;color:#fff;width:80px;min-width:80px;max-width:80px;white-space:nowrap">维度</th>`;
-kh1+=`<th rowspan="2" style="${STICKY_L1}${BORDER}background:#1F4E79;color:#fff;white-space:nowrap;width:60px;min-width:60px">单位</th>`;
-kh1+=`<th colspan="${actMonths.length+1}" style="${BORDER}background:#C6EFCE;color:#000;font-size:13px;height:28px;text-align:center;vertical-align:middle">实际到货</th>`;
-kh1+=`<th colspan="${estMonths.length+1}" style="${BORDER}background:#FFD966;color:#000;font-size:13px;text-align:center;vertical-align:middle">预估到货</th></tr>`;
-let kh2='<tr style="position:sticky;top:28px;z-index:10">';
-actMonths.forEach(m=>{kh2+=`<th style="${BORDER}background:#C6EFCE;white-space:nowrap">${fmtM(m)}</th>`;});
-kh2+=`<th style="${BORDER}background:#C6EFCE;white-space:nowrap">总计</th>`;
-estMonths.forEach(m=>{kh2+=`<th style="${BORDER}background:#FFD966;white-space:nowrap">${fmtM(m)}</th>`;});
-kh2+=`<th style="${BORDER}background:#FFD966;white-space:nowrap">总计</th></tr>`;
-ktHead.innerHTML=kh1+kh2;
+// 表头（单行：维度|单位 + 月份 + 总计）
+let kh='<tr style="position:sticky;top:0;z-index:10">';
+kh+=`<th style="${STICKY_L0}${BORDER}background:#1F4E79;color:#fff;width:80px;min-width:80px;max-width:80px;white-space:nowrap">维度</th>`;
+kh+=`<th style="${STICKY_L1}${BORDER}background:#1F4E79;color:#fff;white-space:nowrap;width:60px;min-width:60px">单位</th>`;
+dataMonths.forEach(m=>{kh+=`<th style="${BORDER}background:#1F4E79;color:#fff;white-space:nowrap">${fmtM(m)}</th>`;});
+kh+=`<th style="${BORDER}background:#1F4E79;color:#fff;white-space:nowrap">总计</th></tr>`;
+ktHead.innerHTML=kh;
 // 数据行
 let kitHtml='';
 kitRows.forEach(kr=>{
-  // 汇总该维度所有品类的月度数据
-  let actVals=actMonths.map(m=>rows.filter(r=>kr.cats.includes(r.category)).reduce((s,r)=>s+(r[`${m}(实际)`]||0),0));
-  let estVals=estMonths.map(m=>rows.filter(r=>kr.cats.includes(r.category)).reduce((s,r)=>s+(r[`${m}(预估)`]||0),0));
-  const actTot=actVals.reduce((s,v)=>s+v,0);
-  const estTot=estVals.reduce((s,v)=>s+v,0);
+  let vals=dataMonths.map(m=>rows.filter(r=>kr.cats.includes(r.category)).reduce((s,r)=>s+(r[m]||0),0));
+  const tot=vals.reduce((s,v)=>s+v,0);
   kitHtml+=`<tr><td style="${STICKY_L0}${BORDER}background:#D9E1F2;font-weight:600;vertical-align:middle;width:80px;min-width:80px;max-width:80px;white-space:nowrap;text-align:center">${kr.label}</td>`;
   kitHtml+=`<td style="${STICKY_L1}${BORDER}background:#D9E1F2;white-space:nowrap;width:60px;min-width:60px;text-align:center">${kr.unit}</td>`;
-  actVals.forEach(v=>{kitHtml+=`<td class="num" style="${BORDER}background:#E2EFDA;${v?'font-weight:600;color:#1a5631':'color:#bbb'}">${v||'·'}</td>`;});
-  kitHtml+=`<td class="num" style="${BORDER}background:#C6EFCE;font-weight:700">${actTot||''}</td>`;
-  estVals.forEach(v=>{kitHtml+=`<td class="num" style="${BORDER}background:#FCE4D6;${v?'font-weight:600;color:#9a4a00':'color:#bbb'}">${v||'·'}</td>`;});
-  kitHtml+=`<td class="num" style="${BORDER}background:#FFD966;font-weight:700">${estTot||''}</td></tr>`;
+  vals.forEach(v=>{kitHtml+=`<td class="num" style="${BORDER}background:#D9E1F2;${v?'font-weight:600;color:#1F2937':'color:#bbb'}">${v||'·'}</td>`;});
+  kitHtml+=`<td class="num" style="${BORDER}background:#B4C6E7;font-weight:700">${tot||''}</td></tr>`;
 });
 // 总计行
 let kitTr='<tr style="font-weight:700">';
 kitTr+=`<td colspan="2" style="${STICKY_L0}${BORDER}background:#1F4E79;color:#fff;text-align:center">总计</td>`;
-actMonths.forEach(m=>{const a=rows.filter(r=>['单相逆变器','三相逆变器','电池包'].includes(r.category)).reduce((s,r)=>s+(r[`${m}(实际)`]||0),0);kitTr+=`<td class="num" style="${BORDER}background:#C6EFCE">${a||''}</td>`;});
-const kta=rows.filter(r=>['单相逆变器','三相逆变器','电池包'].includes(r.category)).reduce((s,r)=>s+r['实际总计'],0);
-kitTr+=`<td class="num" style="${BORDER}background:#C6EFCE">${kta}</td>`;
-estMonths.forEach(m=>{const e=rows.filter(r=>['单相逆变器','三相逆变器','电池包'].includes(r.category)).reduce((s,r)=>s+(r[`${m}(预估)`]||0),0);kitTr+=`<td class="num" style="${BORDER}background:#FFD966">${e||''}</td>`;});
-const kte=rows.filter(r=>['单相逆变器','三相逆变器','电池包'].includes(r.category)).reduce((s,r)=>s+r['预估总计'],0);
-kitTr+=`<td class="num" style="${BORDER}background:#FFD966">${kte}</td></tr>`;
+dataMonths.forEach(m=>{const v=rows.filter(r=>['单相逆变器','三相逆变器','电池包'].includes(r.category)).reduce((s,r)=>s+(r[m]||0),0);kitTr+=`<td class="num" style="${BORDER}background:#B4C6E7">${v||''}</td>`;});
+const ktt=rows.filter(r=>['单相逆变器','三相逆变器','电池包'].includes(r.category)).reduce((s,r)=>s+r['总计'],0);
+kitTr+=`<td class="num" style="${BORDER}background:#1F4E79;color:#fff">${ktt}</td></tr>`;
 ktBody.innerHTML=kitHtml+kitTr;
 
 // 说明（仅异常提示）
