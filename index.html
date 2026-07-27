@@ -253,7 +253,7 @@ const BORDER='border:1px solid #fff;';
 // 表头：单行（品类+Model+月份+总计）
 let htr='<tr style="position:sticky;top:0;z-index:10">';
 htr+=`<th style="${STICKY_L0}${BORDER}background:#1F4E79;color:#fff;width:80px;min-width:80px;max-width:80px;white-space:nowrap">品类</th>`;
-htr+=`<th style="${STICKY_L1}${BORDER}background:#1F4E79;color:#fff;white-space:nowrap;width:180px;min-width:180px">Model</th>`;
+htr+=`<th style="${STICKY_L1}${BORDER}background:#1F4E79;color:#fff;white-space:nowrap;width:120px;min-width:120px">Model</th>`;
 dataMonths.forEach(m=>{htr+=`<th style="${BORDER}background:#1F4E79;color:#fff;white-space:nowrap">${fmtM(m)}</th>`;});
 htr+=`<th style="${BORDER}background:#1F4E79;color:#fff;white-space:nowrap">总计</th></tr>`;
 ptHead.innerHTML=htr;
@@ -270,7 +270,7 @@ for(let i=0;i<rows.length;i++){
     catCount++;
     rowsHtml+='<tr>';
   }
-  rowsHtml+=`<td style="${STICKY_L1}${BORDER}background:#D9E1F2;white-space:nowrap;width:180px;min-width:180px">${r.model}</td>`;
+  rowsHtml+=`<td style="${STICKY_L1}${BORDER}background:#D9E1F2;white-space:nowrap;width:120px;min-width:120px">${r.model}</td>`;
   dataMonths.forEach(m=>{const v=r[m];rowsHtml+=`<td class="num" style="${BORDER}background:#D9E1F2;${v?'font-weight:600;color:#1F2937':'color:#bbb'}">${v||'·'}</td>`;});
   rowsHtml+=`<td class="num" style="${BORDER}background:#B4C6E7;font-weight:700">${r['总计']||''}</td></tr>`;
 }
@@ -296,8 +296,8 @@ const kitRows=[
 let kh='<tr style="position:sticky;top:0;z-index:10">';
 kh+=`<th style="${STICKY_L0}${BORDER}background:#1F4E79;color:#fff;width:80px;min-width:80px;max-width:80px;white-space:nowrap">维度</th>`;
 kh+=`<th style="${STICKY_L1}${BORDER}background:#1F4E79;color:#fff;white-space:nowrap;width:60px;min-width:60px">单位</th>`;
-dataMonths.forEach(m=>{kh+=`<th style="${BORDER}background:#1F4E79;color:#fff;white-space:nowrap">${fmtM(m)}</th>`;});
-kh+=`<th style="${BORDER}background:#1F4E79;color:#fff;white-space:nowrap">总计</th></tr>`;
+dataMonths.forEach(m=>{kh+=`<th style="${BORDER}background:#1F4E79;color:#fff;white-space:nowrap;width:52px;min-width:52px">${fmtM(m)}</th>`;});
+kh+=`<th style="${BORDER}background:#1F4E79;color:#fff;white-space:nowrap;width:52px;min-width:52px">总计</th></tr>`;
 ktHead.innerHTML=kh;
 // 数据行
 let kitHtml='';
