@@ -94,16 +94,16 @@
   <div style="display:flex;gap:14px;align-items:flex-start">
     <div style="flex:1;min-width:0">
       <div class="table-wrap" style="max-height:200px;overflow:auto">
-        <table id="kit-table" style="font-size:11.5px;border-collapse:separate;border-spacing:0;table-layout:fixed">
+        <table id="kit-table" style="font-size:11.5px;border-collapse:separate;border-spacing:0">
           <thead></thead>
           <tbody></tbody>
         </table>
       </div>
     </div>
-    <div id="offshore-kit-wrap" style="flex:0 0 auto;display:none;position:relative">
+    <div id="offshore-kit-wrap" style="flex:0 0 220px;display:none;position:relative">
       <div style="position:absolute;top:-17px;left:0;font-size:11px;font-weight:500;color:#534AB7;white-space:nowrap">Offshore data（直发欧洲客户）</div>
       <div class="table-wrap" style="max-height:200px;overflow:auto">
-        <table id="offshore-kit-table" style="font-size:11.5px;border-collapse:separate;border-spacing:0;table-layout:fixed">
+        <table id="offshore-kit-table" style="font-size:11.5px;border-collapse:separate;border-spacing:0">
           <thead></thead>
           <tbody></tbody>
         </table>
@@ -320,10 +320,10 @@ if(offMonths.length>0 && (off.grand_total||0)>0){
   const okHead=document.querySelector('#offshore-kit-table thead');
   const okBody=document.querySelector('#offshore-kit-table tbody');
   let okh='<tr style="position:sticky;top:0;z-index:10">';
-  okh+=`<th style="${STICKY_L0}${BORDER}background:${OFF_H};color:#fff;white-space:nowrap;width:45px">维度</th>`;
-  okh+=`<th style="${STICKY_L1}${BORDER}background:${OFF_H};color:#fff;white-space:nowrap;width:38px">单位</th>`;
-  offMonths.forEach(m=>{okh+=`<th style="${BORDER}background:${OFF_H};color:#fff;white-space:nowrap;width:58px">${fmtM(m)}</th>`;});
-  okh+=`<th style="${BORDER}background:${OFF_H};color:#fff;white-space:nowrap;width:45px">总计</th></tr>`;
+  okh+=`<th style="${STICKY_L0}${BORDER}background:${OFF_H};color:#fff;white-space:nowrap">维度</th>`;
+  okh+=`<th style="${STICKY_L1}${BORDER}background:${OFF_H};color:#fff;white-space:nowrap">单位</th>`;
+  offMonths.forEach(m=>{okh+=`<th style="${BORDER}background:${OFF_H};color:#fff;white-space:nowrap">${fmtM(m)}</th>`;});
+  okh+=`<th style="${BORDER}background:${OFF_H};color:#fff;white-space:nowrap">总计</th></tr>`;
   okHead.innerHTML=okh;
   let okHtml='';
   (off.plan_rows||[]).forEach(kr=>{
