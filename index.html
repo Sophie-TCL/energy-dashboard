@@ -109,7 +109,7 @@
 </div>
 
 <div class="card" style="margin-bottom:14px">
-  <h2>各品类到货趋势（按月）</h2>
+  <h2>各品类到货趋势（2026-按月）</h2>
   <div class="cat-grid" id="cat-grid"></div>
 </div>
 
@@ -218,16 +218,17 @@ new Chart(document.getElementById('chart-pie'),{type:'doughnut',
 
 // 各品类月度柱状图(3x2网格，不分实际/预估)
 const grid=document.getElementById('cat-grid');
+const shortMonths=months.map(m=>m.split('-')[1]); // 2026-02 → 02
 cm.forEach((c,idx)=>{
   const d=document.createElement('div');d.className='cat-card';
   d.innerHTML=`<div class="ct"><span>${c.category}</span><span class="tl">合计 ${c.total.toLocaleString()} 台</span></div><div class="cat-chart"><canvas></canvas></div>`;
   grid.appendChild(d);
   new Chart(d.querySelector('canvas'),{type:'bar',
-    data:{labels:months,datasets:[
+    data:{labels:shortMonths,datasets:[
       {label:'到货量',data:c.data,backgroundColor:CAT_COLORS[idx]}]},
     options:{responsive:true,maintainAspectRatio:false,
-      plugins:{legend:{display:false},tooltip:{callbacks:{label:x=>x.parsed.y.toLocaleString()+' 台'}}},
-      scales:{x:{grid:{display:false},ticks:{font:{size:9},maxRotation:0,autoSkip:true}},
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:x=>x.parsed.y.toLocaleString()+' 台',title:items=>{const i=items[0].dataIndex;return months[i];}}}},
+      scales:{x:{grid:{display:false},ticks:{font:{size:9},maxRotation:0,autoSkip:false}},
         y:{beginAtZero:true,ticks:{font:{size:9},callback:v=>v>=1000?(v/1000)+'k':v}}}}});
 });
 
