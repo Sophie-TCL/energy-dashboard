@@ -201,9 +201,9 @@ function renderAll(sk){
   // KPI趋势图
   charts.push(new Chart(document.getElementById('chart-kpi'),{type:'bar',
     data:{labels:dg.map(g=>g.name),datasets:[
-      {label:'已到港',data:dg.map(g=>g['已到港']),backgroundColor:'#16a34a',barPercentage:0.5,categoryPercentage:0.5},
-      {label:'在途',data:dg.map(g=>g['在途']),backgroundColor:'#f59e0b',barPercentage:0.5,categoryPercentage:0.5},
-      {label:'生产中',data:dg.map(g=>g['生产中']),backgroundColor:'#6b7280',barPercentage:0.5,categoryPercentage:0.5}]},
+      {label:'已到港',data:dg.map(g=>g['已到港']),backgroundColor:'#16a34a',barPercentage:0.5,categoryPercentage:0.5,maxBarThickness:50},
+      {label:'在途',data:dg.map(g=>g['在途']),backgroundColor:'#f59e0b',barPercentage:0.5,categoryPercentage:0.5,maxBarThickness:50},
+      {label:'生产中',data:dg.map(g=>g['生产中']),backgroundColor:'#6b7280',barPercentage:0.5,categoryPercentage:0.5,maxBarThickness:50}]},
     options:{responsive:true,maintainAspectRatio:false,
       plugins:{legend:{position:'bottom',labels:{boxWidth:12,padding:10,font:{size:12}}},tooltip:{callbacks:{label:c=>c.dataset.label+': '+c.parsed.y.toLocaleString()+' 台/套'}}},
       scales:{x:{stacked:true,grid:{display:false}},y:{stacked:true,beginAtZero:true,ticks:{callback:v=>v.toLocaleString()}}}}}));
@@ -215,7 +215,7 @@ function renderAll(sk){
   const kitCats=['单相逆变器','三相逆变器'];
   const kitTotal=months.map((m,i)=>cm.filter(c=>kitCats.includes(c.category)).reduce((s,c)=>s+c.data[i],0));
   charts.push(new Chart(document.getElementById('chart-month'),{type:'bar',
-    data:{labels:months,datasets:[{label:'到货量',data:kitTotal,backgroundColor:'#4F81BD',barPercentage:0.4,categoryPercentage:0.7}]},
+    data:{labels:months,datasets:[{label:'到货量',data:kitTotal,backgroundColor:'#4F81BD',barPercentage:0.4,categoryPercentage:0.7,maxBarThickness:28}]},
     options:{responsive:true,maintainAspectRatio:false,
       plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.parsed.y.toLocaleString()+' 套'}}},
       scales:{x:{grid:{display:false}},y:{beginAtZero:true,ticks:{callback:v=>v.toLocaleString()}}}}}));
@@ -235,7 +235,7 @@ function renderAll(sk){
     d.innerHTML=`<div class="ct"><span>${c.category}</span><span class="tl">合计 ${c.total.toLocaleString()} 台</span></div><div class="cat-chart"><canvas></canvas></div>`;
     grid.appendChild(d);
     charts.push(new Chart(d.querySelector('canvas'),{type:'bar',
-      data:{labels:shortMonths,datasets:[{label:'到货量',data:c.data,backgroundColor:CAT_COLORS[idx]}]},
+      data:{labels:shortMonths,datasets:[{label:'到货量',data:c.data,backgroundColor:CAT_COLORS[idx],barPercentage:0.5,categoryPercentage:0.7,maxBarThickness:20}]},
       options:{responsive:true,maintainAspectRatio:false,
         plugins:{legend:{display:false},tooltip:{callbacks:{label:x=>x.parsed.y.toLocaleString()+' 台',title:items=>months[items[0].dataIndex]}}},
         scales:{x:{grid:{display:false},ticks:{font:{size:9},maxRotation:0,autoSkip:false}},y:{beginAtZero:true,ticks:{font:{size:9},callback:v=>v>=1000?(v/1000)+'k':v}}}}}));
