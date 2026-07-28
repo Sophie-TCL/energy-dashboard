@@ -57,20 +57,22 @@
   #offshore-detail-table th,#offshore-detail-table td{padding:3px 6px;text-align:center;vertical-align:middle}
   #offshore-kit-table th:first-child,#offshore-kit-table td:first-child,
   #offshore-detail-table th:first-child,#offshore-detail-table td:first-child{padding-left:8px}
-  .supplier-tabs{display:flex;gap:0;margin-bottom:16px;border-bottom:2px solid var(--border)}
-  .supplier-tabs .tab{padding:8px 20px;font-size:13px;font-weight:500;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .2s}
-  .supplier-tabs .tab:hover{color:#1F4E79}
-  .supplier-tabs .tab.active{color:#1F4E79;border-bottom-color:#1F4E79;font-weight:600}
+  .supplier-tabs{display:flex;flex-direction:column;gap:2px;width:130px;flex-shrink:0}
+  .supplier-tabs .tab{padding:12px 16px;font-size:13px;font-weight:500;color:var(--muted);cursor:pointer;border-left:3px solid transparent;border-radius:0 8px 8px 0;transition:all .2s;background:#f9fafb}
+  .supplier-tabs .tab:hover{color:#1F4E79;background:#eef2ff}
+  .supplier-tabs .tab.active{color:#1F4E79;border-left-color:#1F4E79;background:#eef2ff;font-weight:600}
 </style>
 </head>
 <body>
 <div class="header">
   <h1>海外Energy+计划看板</h1>
-  <div class="sub">供应商：为恒 ｜ 到货口径：到港 ｜ 统计范围：2026年1月起到港 ｜ 生成时间：<span id="gen-time"></span></div>
+  <div class="sub">供应商：为恒WHES / 深蓝BlueArk / 固德威Goodwe ｜ 到货口径：到港 ｜ 统计范围：2026年1月起到港 ｜ 生成时间：<span id="gen-time"></span></div>
   <div class="sub" style="margin-top:6px;opacity:.75;font-size:11.5px">口径：已到港=ATA非空(实际到港)；在途=无ATA+有Pick-Up Date(已发货未到港)；生产中=无Pick-Up Date(未发货)+提货计划表9-10月订单</div>
 </div>
 
+<div style="display:flex;gap:16px;align-items:flex-start">
 <div class="supplier-tabs" id="supplier-tabs"></div>
+<div style="flex:1;min-width:0">
 
 <div class="kpi-table-wrap">
   <table class="kpi-table" id="demand-table">
@@ -151,6 +153,9 @@
     </div>
   </div>
   <div class="note" id="note"></div>
+</div>
+
+</div>
 </div>
 
 <div class="footer">Energy+产品每月到货计划 Skill ｜ 数据来源：ODP订单发货进展表 + 为恒提货计划表 + Energy+映射表</div>
