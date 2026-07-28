@@ -58,7 +58,7 @@
   #offshore-kit-table th:first-child,#offshore-kit-table td:first-child,
   #offshore-detail-table th:first-child,#offshore-detail-table td:first-child{padding-left:8px}
   .supplier-tabs{display:flex;flex-direction:column;gap:2px;width:130px;flex-shrink:0}
-  .supplier-tabs .tab{padding:12px 16px;font-size:13px;font-weight:500;color:var(--muted);cursor:pointer;border-left:3px solid transparent;border-radius:0 8px 8px 0;transition:all .2s;background:#f9fafb}
+  .supplier-tabs .tab{padding:12px 16px;font-size:14px;font-weight:500;color:var(--muted);cursor:pointer;border-left:3px solid transparent;border-radius:0 8px 8px 0;transition:all .2s;background:#f9fafb}
   .supplier-tabs .tab:hover{color:#1F4E79;background:#eef2ff}
   .supplier-tabs .tab.active{color:#1F4E79;border-left-color:#1F4E79;background:#eef2ff;font-weight:600}
 </style>
@@ -176,6 +176,7 @@ function destroyCharts(){charts.forEach(c=>{try{c.destroy();}catch(e){}});charts
 function generateTabs(){
   const tc=document.getElementById('supplier-tabs');
   let h='';
+  h+=`<div class="tab ${activeSupplier==='总览'?'active':''}" data-s="总览">总览</div>`;
   for(const[k,v] of Object.entries(RAW.suppliers)){
     h+=`<div class="tab ${k===activeSupplier?'active':''}" data-s="${k}">${v.label||k}</div>`;
   }
@@ -183,10 +184,89 @@ function generateTabs(){
   tc.querySelectorAll('.tab').forEach(t=>{t.onclick=()=>{activeSupplier=t.dataset.s;generateTabs();renderAll(activeSupplier);};});
 }
 
+function renderOverview(){
+  destroyCharts();
+  document.getElementById('gen-time').textContent=RAW.generated_at;
+  // KPI表头还原
+  document.getElementById('th-arrived').textContent='已到港';
+  document.getElementById('th-transit').textContent='在途';
+  document.getElementById('th-production').textContent='生产中';
+  // 汇总对比表
+  let html='';
+  const supColors={'为恒':'#4F81BD','深蓝':'#8064A2','固德威':'#9BBB59'};
+  for(const[k,s] of Object.entries(RAW.suppliers)){
+    const dg=s.demand_by_group||[];
+    const arr=dg.reduce((a,g)=>a+g['已到港'],0);
+    const tra=dg.reduce((a,g)=>a+g['在途'],0);
+    const pro=dg.reduce((a,g)=>a+g['生产中'],0);
+    const tot=s.totals['合计']||0;
+    const off=(s.offshore||{}).grand_total||0;
+    html+=`<tr><td class="row-label" style="border-left:3px solid ${supColors[k]||'#ccc'}">${s.label||k}</td>`
+      +`<td class="v-act">${tot.toLocaleString()}<span class="unit">台</span></td>`
+      +`<td class="v-act">${arr.toLocaleString()}<span class="unit">台</span></td>`
+      +`<td class="v-est">${tra.toLocaleString()}<span class="unit">台</span></td>`
+      +`<td class="v-tbd">${pro.toLocaleString()}<span class="unit">台</span></td></tr>`;
+  }
+  document.getElementById('demand-tbody').innerHTML=html;
+  // 改KPI表头第一列为"供应商"
+  document.querySelector('.h-label').textContent='供应商';
+
+  // 对比柱状图（已到港/在途/生产中 by供应商）
+  const labels=Object.values(RAW.suppliers).map(s=>s.label);
+  const arrData=Object.values(RAW.suppliers).map(s=>(s.demand_by_group||[]).reduce((a,g)=>a+g['已到港'],0));
+  const traData=Object.values(RAW.suppliers).map(s=>(s.demand_by_group||[]).reduce((a,g)=>a+g['在途'],0));
+  const proData=Object.values(RAW.suppliers).map(s=>(s.demand_by_group||[]).reduce((a,g)=>a+g['生产中'],0));
+  charts.push(new Chart(document.getElementById('chart-kpi'),{type:'bar',
+    data:{labels,datasets:[
+      {label:'已到港',data:arrData,backgroundColor:'#16a34a',barPercentage:0.5,categoryPercentage:0.5,maxBarThickness:50},
+      {label:'在途',data:traData,backgroundColor:'#f59e0b',barPercentage:0.5,categoryPercentage:0.5,maxBarThickness:50},
+      {label:'生产中',data:proData,backgroundColor:'#6b7280',barPercentage:0.5,categoryPercentage:0.5,maxBarThickness:50}]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{position:'bottom',labels:{boxWidth:12,padding:10,font:{size:12}}},tooltip:{callbacks:{label:c=>c.dataset.label+': '+c.parsed.y.toLocaleString()+' 台'}}},
+      scales:{x:{stacked:true,grid:{display:false}},y:{stacked:true,beginAtZero:true,ticks:{callback:v=>v.toLocaleString()}}}}}));
+
+  // 月度趋势（按供应商堆叠）
+  const allMonths=Object.values(RAW.suppliers).flatMap(s=>s.summary.months).filter((v,i,a)=>a.indexOf(v)===i).sort();
+  const supColors2={'为恒':'#4F81BD','深蓝':'#8064A2','固德威':'#9BBB59'};
+  const ds=Object.entries(RAW.suppliers).map(([k,s])=>{
+    const idx=s.summary.months.map(m=>allMonths.indexOf(m));
+    return{label:s.label,data:allMonths.map(m=>{const i=s.summary.months.indexOf(m);return i>=0?s.summary.total[i]:0;}),backgroundColor:supColors2[k],barPercentage:0.4,categoryPercentage:0.7,maxBarThickness:28};
+  });
+  charts.push(new Chart(document.getElementById('chart-month'),{type:'bar',
+    data:{labels:allMonths,datasets:ds},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.dataset.label+': '+c.parsed.y.toLocaleString()+' 台'}}},
+      scales:{x:{grid:{display:false}},y:{beginAtZero:true,ticks:{callback:v=>v.toLocaleString()}}}}}));
+
+  // 饼图：三家供应商总量占比
+  const pieLabels=Object.values(RAW.suppliers).map(s=>s.label);
+  const pieData=Object.values(RAW.suppliers).map(s=>s.totals['合计']||0);
+  charts.push(new Chart(document.getElementById('chart-pie'),{type:'doughnut',
+    data:{labels:pieLabels,datasets:[{data:pieData,backgroundColor:['#4F81BD','#8064A2','#9BBB59'],borderWidth:2,borderColor:'#fff'}]},
+    options:{responsive:true,maintainAspectRatio:false,cutout:'52%',
+      plugins:{legend:{position:'right',labels:{boxWidth:10,boxHeight:10,padding:10,font:{size:11}}},tooltip:{callbacks:{label:c=>c.label+': '+c.parsed.toLocaleString()+' 台'}}}}}));
+
+  // 清空品类趋势图区域，显示提示
+  document.getElementById('cat-grid').innerHTML='<div style="grid-column:1/-1;text-align:center;color:var(--muted);font-size:13px;padding:40px 0">点击左侧供应商标签查看各品类到货趋势</div>';
+  // 清空表格
+  document.querySelector('#kit-table thead').innerHTML='';
+  document.querySelector('#kit-table tbody').innerHTML='';
+  document.querySelector('#plan-table thead').innerHTML='';
+  document.querySelector('#plan-table tbody').innerHTML='';
+  document.getElementById('offshore-kit-wrap').style.display='none';
+  document.getElementById('offshore-detail-wrap').style.display='none';
+  // note
+  const grandTotal=Object.values(RAW.suppliers).reduce((s,v)=>s+(v.totals['合计']||0),0);
+  const grandOff=Object.values(RAW.suppliers).reduce((s,v)=>s+((v.offshore||{}).grand_total||0),0);
+  document.getElementById('note').innerHTML=`📊 三家供应商合计到货 ${grandTotal.toLocaleString()} 台${grandOff>0?'（另有Offshore '+grandOff.toLocaleString()+' 台单独展示）':''}。`;
+}
+
 function renderAll(sk){
+  if(sk==='总览'){renderOverview();return;}
   const S=RAW.suppliers[sk];if(!S)return;
   destroyCharts();
   document.getElementById('gen-time').textContent=RAW.generated_at;
+  document.querySelector('.h-label').textContent='维度';
 
   // KPI表头
   const dom=S.demand_om_labels||{};
