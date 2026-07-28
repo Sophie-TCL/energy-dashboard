@@ -98,7 +98,7 @@
   <div class="chart-box" style="height:240px"><canvas id="chart-month" role="img" aria-label="每月到货分布柱状图">每月到货分布</canvas></div>
 </div>
 
-<div class="card" style="margin-bottom:14px">
+<div class="card" id="card-kit" style="margin-bottom:14px">
   <h2>表一：到货计划表-套件</h2>
   <div style="display:flex;gap:14px;align-items:flex-start">
     <div style="flex:1;min-width:0">
@@ -121,17 +121,17 @@
   </div>
 </div>
 
-<div class="card" style="margin-bottom:14px">
+<div class="card" id="card-cat" style="margin-bottom:14px">
   <h2>各品类到货趋势（2026-按月）</h2>
   <div class="cat-grid" id="cat-grid"></div>
 </div>
 
-<div class="card" style="margin-bottom:14px">
+<div class="card" id="card-pie" style="margin-bottom:14px">
   <h2>品类到货占比</h2>
   <div class="chart-box" style="height:240px"><canvas id="chart-pie" role="img" aria-label="品类到货占比饼图">品类到货占比</canvas></div>
 </div>
 
-<div class="card">
+<div class="card" id="card-detail">
   <h2>表二：到货计划表-明细</h2>
   <div style="display:flex;gap:14px;align-items:flex-start">
     <div style="flex:1;min-width:0">
@@ -253,27 +253,10 @@ function renderOverview(){
       plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.dataset.label+': '+c.parsed.y.toLocaleString()+' 台/套'}}},
       scales:{x:{grid:{display:false}},y:{beginAtZero:true,ticks:{callback:v=>v.toLocaleString()}}}}}));
 
-  // 饼图：三家供应商总量占比
-  const pieLabels=supEntries.map(([k,s])=>s.label);
-  const pieData=supEntries.map(([k,s])=>getDisplayData(k,s).tot);
-  charts.push(new Chart(document.getElementById('chart-pie'),{type:'doughnut',
-    data:{labels:pieLabels,datasets:[{data:pieData,backgroundColor:['#4F81BD','#8064A2','#9BBB59'],borderWidth:2,borderColor:'#fff'}]},
-    options:{responsive:true,maintainAspectRatio:false,cutout:'52%',
-      plugins:{legend:{position:'right',labels:{boxWidth:10,boxHeight:10,padding:10,font:{size:11}}},tooltip:{callbacks:{label:c=>c.label+': '+c.parsed.toLocaleString()+' 台/套'}}}}}));
-
-  // 清空品类趋势图区域，显示提示
-  document.getElementById('cat-grid').innerHTML='<div style="grid-column:1/-1;text-align:center;color:var(--muted);font-size:13px;padding:40px 0">点击左侧供应商标签查看各品类到货趋势</div>';
-  // 清空表格
-  document.querySelector('#kit-table thead').innerHTML='';
-  document.querySelector('#kit-table tbody').innerHTML='';
-  document.querySelector('#plan-table thead').innerHTML='';
-  document.querySelector('#plan-table tbody').innerHTML='';
-  document.getElementById('offshore-kit-wrap').style.display='none';
-  document.getElementById('offshore-detail-wrap').style.display='none';
-  // note
-  const grandTotal=supEntries.reduce((s,[k,v])=>s+getDisplayData(k,v).tot,0);
-  const grandOff=Object.values(RAW.suppliers).reduce((s,v)=>s+((v.offshore||{}).grand_total||0),0);
-  document.getElementById('note').innerHTML=`📊 三家供应商合计到货 ${grandTotal.toLocaleString()} 台/套${grandOff>0?'（另有Offshore '+grandOff.toLocaleString()+' 台单独展示）':''}。<br><span style="color:var(--muted);font-size:11px">注：为恒数据按逆变器套数口径统计，深蓝/固德威按全部品类台数口径统计。</span>`;
+  // 总览页只保留KPI表格 + 到货状态分布图 + 每月到货分布图，其余卡片隐藏
+  ['card-kit','card-cat','card-pie','card-detail'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='none';});
+  // note也隐藏
+  const noteEl=document.getElementById('note');if(noteEl)noteEl.parentElement.style.display='none';
 }
 
 function renderAll(sk){
@@ -281,6 +264,9 @@ function renderAll(sk){
   const S=RAW.suppliers[sk];if(!S)return;
   destroyCharts();
   document.getElementById('gen-time').textContent=RAW.generated_at;
+  // 恢复显示总览页隐藏的卡片
+  ['card-kit','card-cat','card-pie','card-detail'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='';});
+  const noteParent=document.getElementById('note').parentElement;if(noteParent)noteParent.style.display='';
   // 重建KPI表头：4列（维度/已到港/在途/生产中）
   document.querySelector('#demand-table thead').innerHTML='<tr>'
     +'<th class="h-label">维度</th>'
