@@ -250,7 +250,7 @@ function renderOverview(){
   charts.push(new Chart(document.getElementById('chart-month'),{type:'bar',
     data:{labels:allMonths,datasets:ds},
     options:{responsive:true,maintainAspectRatio:false,
-      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.dataset.label+': '+c.parsed.y.toLocaleString()+' 台/套'}}},
+      plugins:{legend:{display:true,position:'top',labels:{boxWidth:14,boxHeight:14,padding:12,font:{size:12},usePointStyle:true,pointStyle:'rectRounded'}},tooltip:{callbacks:{label:c=>c.dataset.label+': '+c.parsed.y.toLocaleString()+' 台/套'}}},
       scales:{x:{grid:{display:false}},y:{beginAtZero:true,ticks:{callback:v=>v.toLocaleString()}}}}}));
 
   // 总览页只保留KPI表格 + 到货状态分布图 + 每月到货分布图，其余卡片隐藏
