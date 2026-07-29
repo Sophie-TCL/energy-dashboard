@@ -249,11 +249,11 @@ function fmtM(m){const [y,mo]=m.split('-');return MON3[parseInt(mo)-1]+'-'+y.sli
 // 筛选有数据的月份
 const dataMonths=pmonths.filter(m=>rows.some(r=>r[m]>0));
 const STICKY_L0='position:sticky;left:0;z-index:6;';
-const STICKY_L1='position:sticky;left:60px;z-index:6;';
+const STICKY_L1='position:sticky;left:70px;z-index:6;';
 const BORDER='border:1px solid #fff;';
 // 表头：单行（品类+Model+月份+总计）
 let htr='<tr style="position:sticky;top:0;z-index:10">';
-htr+=`<th style="${STICKY_L0}${BORDER}background:#1F4E79;color:#fff;width:60px;min-width:60px;max-width:60px;white-space:nowrap">品类</th>`;
+htr+=`<th style="${STICKY_L0}${BORDER}background:#1F4E79;color:#fff;width:70px;min-width:70px;max-width:70px;white-space:nowrap">品类</th>`;
 htr+=`<th style="${STICKY_L1}${BORDER}background:#1F4E79;color:#fff;white-space:nowrap;width:100px;min-width:100px">Model</th>`;
 dataMonths.forEach(m=>{htr+=`<th style="${BORDER}background:#1F4E79;color:#fff;white-space:nowrap">${fmtM(m)}</th>`;});
 htr+=`<th style="${BORDER}background:#1F4E79;color:#fff;white-space:nowrap">总计</th></tr>`;
@@ -266,7 +266,7 @@ for(let i=0;i<rows.length;i++){
     if(curCat!==null&&catCount>1){rowsHtml=rowsHtml.replace(catPlaceholder,catCount);}
     curCat=r.category;catCount=1;
     catPlaceholder=`__RS_${i}__`;
-    rowsHtml+=`<tr><td rowspan="${catPlaceholder}" style="${STICKY_L0}${BORDER}background:#D9E1F2;font-weight:600;vertical-align:middle;width:60px;min-width:60px;max-width:60px;white-space:nowrap">${r.category}</td>`;
+    rowsHtml+=`<tr><td rowspan="${catPlaceholder}" style="${STICKY_L0}${BORDER}background:#D9E1F2;font-weight:600;vertical-align:middle;width:70px;min-width:70px;max-width:70px;white-space:nowrap">${r.category}</td>`;
   }else{
     catCount++;
     rowsHtml+='<tr>';
@@ -295,7 +295,7 @@ const kitRows=[
 ];
 // 表头（单行：维度|单位 + 月份 + 总计）
 let kh='<tr style="position:sticky;top:0;z-index:10">';
-kh+=`<th style="${STICKY_L0}${BORDER}background:#1F4E79;color:#fff;width:60px;min-width:60px;max-width:60px;white-space:nowrap">维度</th>`;
+kh+=`<th style="${STICKY_L0}${BORDER}background:#1F4E79;color:#fff;width:70px;min-width:70px;max-width:70px;white-space:nowrap">维度</th>`;
 kh+=`<th style="${STICKY_L1}${BORDER}background:#1F4E79;color:#fff;white-space:nowrap;width:40px;min-width:40px">单位</th>`;
 dataMonths.forEach(m=>{kh+=`<th style="${BORDER}background:#1F4E79;color:#fff;white-space:nowrap;width:44px;min-width:44px">${fmtM(m)}</th>`;});
 kh+=`<th style="${BORDER}background:#1F4E79;color:#fff;white-space:nowrap;width:44px;min-width:44px">总计</th></tr>`;
@@ -305,7 +305,7 @@ let kitHtml='';
 kitRows.forEach(kr=>{
   let vals=dataMonths.map(m=>rows.filter(r=>kr.cats.includes(r.category)).reduce((s,r)=>s+(r[m]||0),0));
   const tot=vals.reduce((s,v)=>s+v,0);
-  kitHtml+=`<tr><td style="${STICKY_L0}${BORDER}background:#D9E1F2;font-weight:600;vertical-align:middle;width:60px;min-width:60px;max-width:60px;white-space:nowrap;text-align:center">${kr.label}</td>`;
+  kitHtml+=`<tr><td style="${STICKY_L0}${BORDER}background:#D9E1F2;font-weight:600;vertical-align:middle;width:70px;min-width:70px;max-width:70px;white-space:nowrap;text-align:center">${kr.label}</td>`;
   kitHtml+=`<td style="${STICKY_L1}${BORDER}background:#D9E1F2;white-space:nowrap;width:40px;min-width:40px;text-align:center">${kr.unit}</td>`;
   vals.forEach(v=>{kitHtml+=`<td class="num" style="${BORDER}background:#D9E1F2;${v?'font-weight:600;color:#1F2937':'color:#bbb'}">${v||'·'}</td>`;});
   kitHtml+=`<td class="num" style="${BORDER}background:#FFD966;font-weight:700;color:#1F2937;font-size:13px">${tot||''}</td></tr>`;
@@ -348,15 +348,27 @@ if(offMonths.length>0 && (off.grand_total||0)>0){
   odHead.innerHTML=odh;
   let odHtml='';
   let odTotVals=offMonths.map(()=>0);
-  (off.detail_rows||[]).forEach(r=>{
+  // 按品类分组，同品类用rowspan合并
+  const odRows=off.detail_rows||[];
+  let odCat=null,odCnt=0,odPh='';
+  for(let i=0;i<odRows.length;i++){
+    const r=odRows[i];
     let vals=offMonths.map(m=>r[m]||0);
     const tot=vals.reduce((s,v)=>s+v,0);
-    vals.forEach((v,i)=>{odTotVals[i]+=v;});
-    odHtml+=`<tr><td style="${BORDER}background:${OFF_BG};font-weight:600;white-space:nowrap">${r.category}</td>`;
+    vals.forEach((v,idx)=>{odTotVals[idx]+=v;});
+    if(r.category!==odCat){
+      if(odCat!==null&&odCnt>1){odHtml=odHtml.replace(odPh,odCnt);}
+      odCat=r.category;odCnt=1;odPh=`__ODRS${i}__`;
+      odHtml+=`<tr><td rowspan="${odPh}" style="${BORDER}background:${OFF_BG};font-weight:600;white-space:nowrap;vertical-align:middle">${r.category}</td>`;
+    }else{
+      odCnt++;
+      odHtml+='<tr>';
+    }
     odHtml+=`<td style="${BORDER}background:${OFF_BG};white-space:nowrap">${r.model}</td>`;
     vals.forEach(v=>{odHtml+=`<td class="num" style="${BORDER}background:${OFF_BG};${v?'font-weight:600;color:#1F2937':'color:#bbb'}">${v||'·'}</td>`;});
     odHtml+=`<td class="num" style="${BORDER}background:${OFF_TOT};font-weight:700">${tot||''}</td></tr>`;
-  });
+  }
+  if(odCnt>1){odHtml=odHtml.replace(odPh,odCnt);}
   const odtt=odTotVals.reduce((s,v)=>s+v,0);
   odHtml+=`<tr style="font-weight:700"><td colspan="2" style="${BORDER}background:${OFF_H};color:#fff;text-align:center">总计</td>`;
   odTotVals.forEach(v=>{odHtml+=`<td class="num" style="${BORDER}background:${OFF_TOT}">${v||''}</td>`;});
