@@ -197,7 +197,7 @@ function setPageHeader(sk){
   const tabIcons={'总览':'📊','为恒':'⚡','深蓝':'🌊','固德威':'🔆'};
   const supColors={'为恒':'#2E8B57','深蓝':'#4F81BD','固德威':'#C0504D'};
   const S=sk!=='总览'?RAW.suppliers[sk]:null;
-  const label=S?S.label:'总览';
+  const label=S?S.label:'各供应商订单总览';
   const icon=tabIcons[sk]||'•';
   const colorBar=sk!=='总览'?`<span style="display:inline-block;width:4px;height:20px;background:${supColors[sk]||'#ccc'};border-radius:2px"></span>`:'';
   document.getElementById('page-title-bar').innerHTML=`${colorBar}<span class="pt-icon">${icon}</span><span class="pt-text">${label}</span><span class="pt-sub">生成时间：${RAW.generated_at}</span>`;
