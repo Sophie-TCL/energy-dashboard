@@ -101,7 +101,7 @@
         </table>
       </div>
     </div>
-    <div id="offshore-kit-wrap" style="flex:0 0 220px;display:none;position:relative">
+    <div id="offshore-kit-wrap" style="flex:0 0 260px;display:none;position:relative">
       <div style="position:absolute;top:-17px;left:0;font-size:11px;font-weight:500;color:#534AB7;white-space:nowrap">Offshore data（直发欧洲客户）</div>
       <div class="table-wrap" style="max-height:200px;overflow:auto">
         <table id="offshore-kit-table" style="font-size:11.5px;border-collapse:separate;border-spacing:0">
@@ -249,12 +249,12 @@ function fmtM(m){const [y,mo]=m.split('-');return MON3[parseInt(mo)-1]+'-'+y.sli
 // 筛选有数据的月份
 const dataMonths=pmonths.filter(m=>rows.some(r=>r[m]>0));
 const STICKY_L0='position:sticky;left:0;z-index:6;';
-const STICKY_L1='position:sticky;left:80px;z-index:6;';
+const STICKY_L1='position:sticky;left:60px;z-index:6;';
 const BORDER='border:1px solid #fff;';
 // 表头：单行（品类+Model+月份+总计）
 let htr='<tr style="position:sticky;top:0;z-index:10">';
-htr+=`<th style="${STICKY_L0}${BORDER}background:#1F4E79;color:#fff;width:80px;min-width:80px;max-width:80px;white-space:nowrap">品类</th>`;
-htr+=`<th style="${STICKY_L1}${BORDER}background:#1F4E79;color:#fff;white-space:nowrap;width:120px;min-width:120px">Model</th>`;
+htr+=`<th style="${STICKY_L0}${BORDER}background:#1F4E79;color:#fff;width:60px;min-width:60px;max-width:60px;white-space:nowrap">品类</th>`;
+htr+=`<th style="${STICKY_L1}${BORDER}background:#1F4E79;color:#fff;white-space:nowrap;width:100px;min-width:100px">Model</th>`;
 dataMonths.forEach(m=>{htr+=`<th style="${BORDER}background:#1F4E79;color:#fff;white-space:nowrap">${fmtM(m)}</th>`;});
 htr+=`<th style="${BORDER}background:#1F4E79;color:#fff;white-space:nowrap">总计</th></tr>`;
 ptHead.innerHTML=htr;
@@ -266,12 +266,12 @@ for(let i=0;i<rows.length;i++){
     if(curCat!==null&&catCount>1){rowsHtml=rowsHtml.replace(catPlaceholder,catCount);}
     curCat=r.category;catCount=1;
     catPlaceholder=`__RS_${i}__`;
-    rowsHtml+=`<tr><td rowspan="${catPlaceholder}" style="${STICKY_L0}${BORDER}background:#D9E1F2;font-weight:600;vertical-align:middle;width:80px;min-width:80px;max-width:80px;white-space:nowrap">${r.category}</td>`;
+    rowsHtml+=`<tr><td rowspan="${catPlaceholder}" style="${STICKY_L0}${BORDER}background:#D9E1F2;font-weight:600;vertical-align:middle;width:60px;min-width:60px;max-width:60px;white-space:nowrap">${r.category}</td>`;
   }else{
     catCount++;
     rowsHtml+='<tr>';
   }
-  rowsHtml+=`<td style="${STICKY_L1}${BORDER}background:#D9E1F2;white-space:nowrap;width:120px;min-width:120px">${r.model}</td>`;
+  rowsHtml+=`<td style="${STICKY_L1}${BORDER}background:#D9E1F2;white-space:nowrap;width:100px;min-width:100px">${r.model}</td>`;
   dataMonths.forEach(m=>{const v=r[m];rowsHtml+=`<td class="num" style="${BORDER}background:#D9E1F2;${v?'font-weight:600;color:#1F2937':'color:#bbb'}">${v||'·'}</td>`;});
   rowsHtml+=`<td class="num" style="${BORDER}background:#B4C6E7;font-weight:700">${r['总计']||''}</td></tr>`;
 }
@@ -295,18 +295,18 @@ const kitRows=[
 ];
 // 表头（单行：维度|单位 + 月份 + 总计）
 let kh='<tr style="position:sticky;top:0;z-index:10">';
-kh+=`<th style="${STICKY_L0}${BORDER}background:#1F4E79;color:#fff;width:80px;min-width:80px;max-width:80px;white-space:nowrap">维度</th>`;
-kh+=`<th style="${STICKY_L1}${BORDER}background:#1F4E79;color:#fff;white-space:nowrap;width:60px;min-width:60px">单位</th>`;
-dataMonths.forEach(m=>{kh+=`<th style="${BORDER}background:#1F4E79;color:#fff;white-space:nowrap;width:52px;min-width:52px">${fmtM(m)}</th>`;});
-kh+=`<th style="${BORDER}background:#1F4E79;color:#fff;white-space:nowrap;width:52px;min-width:52px">总计</th></tr>`;
+kh+=`<th style="${STICKY_L0}${BORDER}background:#1F4E79;color:#fff;width:60px;min-width:60px;max-width:60px;white-space:nowrap">维度</th>`;
+kh+=`<th style="${STICKY_L1}${BORDER}background:#1F4E79;color:#fff;white-space:nowrap;width:40px;min-width:40px">单位</th>`;
+dataMonths.forEach(m=>{kh+=`<th style="${BORDER}background:#1F4E79;color:#fff;white-space:nowrap;width:44px;min-width:44px">${fmtM(m)}</th>`;});
+kh+=`<th style="${BORDER}background:#1F4E79;color:#fff;white-space:nowrap;width:44px;min-width:44px">总计</th></tr>`;
 ktHead.innerHTML=kh;
 // 数据行
 let kitHtml='';
 kitRows.forEach(kr=>{
   let vals=dataMonths.map(m=>rows.filter(r=>kr.cats.includes(r.category)).reduce((s,r)=>s+(r[m]||0),0));
   const tot=vals.reduce((s,v)=>s+v,0);
-  kitHtml+=`<tr><td style="${STICKY_L0}${BORDER}background:#D9E1F2;font-weight:600;vertical-align:middle;width:80px;min-width:80px;max-width:80px;white-space:nowrap;text-align:center">${kr.label}</td>`;
-  kitHtml+=`<td style="${STICKY_L1}${BORDER}background:#D9E1F2;white-space:nowrap;width:60px;min-width:60px;text-align:center">${kr.unit}</td>`;
+  kitHtml+=`<tr><td style="${STICKY_L0}${BORDER}background:#D9E1F2;font-weight:600;vertical-align:middle;width:60px;min-width:60px;max-width:60px;white-space:nowrap;text-align:center">${kr.label}</td>`;
+  kitHtml+=`<td style="${STICKY_L1}${BORDER}background:#D9E1F2;white-space:nowrap;width:40px;min-width:40px;text-align:center">${kr.unit}</td>`;
   vals.forEach(v=>{kitHtml+=`<td class="num" style="${BORDER}background:#D9E1F2;${v?'font-weight:600;color:#1F2937':'color:#bbb'}">${v||'·'}</td>`;});
   kitHtml+=`<td class="num" style="${BORDER}background:#FFD966;font-weight:700;color:#1F2937;font-size:13px">${tot||''}</td></tr>`;
 });
@@ -321,17 +321,17 @@ if(offMonths.length>0 && (off.grand_total||0)>0){
   const okHead=document.querySelector('#offshore-kit-table thead');
   const okBody=document.querySelector('#offshore-kit-table tbody');
   let okh='<tr style="position:sticky;top:0;z-index:10">';
-  okh+=`<th style="${STICKY_L0}${BORDER}background:${OFF_H};color:#fff;white-space:nowrap">维度</th>`;
-  okh+=`<th style="${STICKY_L1}${BORDER}background:${OFF_H};color:#fff;white-space:nowrap">单位</th>`;
-  offMonths.forEach(m=>{okh+=`<th style="${BORDER}background:${OFF_H};color:#fff;white-space:nowrap">${fmtM(m)}</th>`;});
-  okh+=`<th style="${BORDER}background:${OFF_H};color:#fff;white-space:nowrap">总计</th></tr>`;
+  okh+=`<th style="${BORDER}background:${OFF_H};color:#fff;white-space:nowrap;width:50px;min-width:50px">维度</th>`;
+  okh+=`<th style="${BORDER}background:${OFF_H};color:#fff;white-space:nowrap;width:36px;min-width:36px">单位</th>`;
+  offMonths.forEach(m=>{okh+=`<th style="${BORDER}background:${OFF_H};color:#fff;white-space:nowrap;width:48px;min-width:48px">${fmtM(m)}</th>`;});
+  okh+=`<th style="${BORDER}background:${OFF_H};color:#fff;white-space:nowrap;width:42px;min-width:42px">总计</th></tr>`;
   okHead.innerHTML=okh;
   let okHtml='';
   (off.plan_rows||[]).forEach(kr=>{
     let vals=offMonths.map(m=>kr[m]||0);
     const tot=vals.reduce((s,v)=>s+v,0);
-    okHtml+=`<tr><td style="${STICKY_L0}${BORDER}background:${OFF_BG};font-weight:600;white-space:nowrap;text-align:center">${kr.label}</td>`;
-    okHtml+=`<td style="${STICKY_L1}${BORDER}background:${OFF_BG};white-space:nowrap;text-align:center">${kr.unit}</td>`;
+    okHtml+=`<tr><td style="${BORDER}background:${OFF_BG};font-weight:600;white-space:nowrap;text-align:center;width:50px;min-width:50px">${kr.label}</td>`;
+    okHtml+=`<td style="${BORDER}background:${OFF_BG};white-space:nowrap;text-align:center;width:36px;min-width:36px">${kr.unit}</td>`;
     vals.forEach(v=>{okHtml+=`<td class="num" style="${BORDER}background:${OFF_BG};${v?'font-weight:600;color:#1F2937':'color:#bbb'}">${v||'·'}</td>`;});
     okHtml+=`<td class="num" style="${BORDER}background:${OFF_TOT};font-weight:700">${tot||''}</td></tr>`;
   });
@@ -341,10 +341,10 @@ if(offMonths.length>0 && (off.grand_total||0)>0){
   const odHead=document.querySelector('#offshore-detail-table thead');
   const odBody=document.querySelector('#offshore-detail-table tbody');
   let odh='<tr style="position:sticky;top:0;z-index:10">';
-  odh+=`<th style="${STICKY_L0}${BORDER}background:${OFF_H};color:#fff;white-space:nowrap">品类</th>`;
-  odh+=`<th style="${STICKY_L1}${BORDER}background:${OFF_H};color:#fff;white-space:nowrap">Model</th>`;
-  offMonths.forEach(m=>{odh+=`<th style="${BORDER}background:${OFF_H};color:#fff;white-space:nowrap">${fmtM(m)}</th>`;});
-  odh+=`<th style="${BORDER}background:${OFF_H};color:#fff;white-space:nowrap">总计</th></tr>`;
+  odh+=`<th style="${BORDER}background:${OFF_H};color:#fff;white-space:nowrap;width:55px;min-width:55px">品类</th>`;
+  odh+=`<th style="${BORDER}background:${OFF_H};color:#fff;white-space:nowrap;width:90px;min-width:90px">Model</th>`;
+  offMonths.forEach(m=>{odh+=`<th style="${BORDER}background:${OFF_H};color:#fff;white-space:nowrap;width:48px;min-width:48px">${fmtM(m)}</th>`;});
+  odh+=`<th style="${BORDER}background:${OFF_H};color:#fff;white-space:nowrap;width:42px;min-width:42px">总计</th></tr>`;
   odHead.innerHTML=odh;
   let odHtml='';
   let odTotVals=offMonths.map(()=>0);
@@ -352,13 +352,13 @@ if(offMonths.length>0 && (off.grand_total||0)>0){
     let vals=offMonths.map(m=>r[m]||0);
     const tot=vals.reduce((s,v)=>s+v,0);
     vals.forEach((v,i)=>{odTotVals[i]+=v;});
-    odHtml+=`<tr><td style="${STICKY_L0}${BORDER}background:${OFF_BG};font-weight:600;white-space:nowrap">${r.category}</td>`;
-    odHtml+=`<td style="${STICKY_L1}${BORDER}background:${OFF_BG};white-space:nowrap">${r.model}</td>`;
+    odHtml+=`<tr><td style="${BORDER}background:${OFF_BG};font-weight:600;white-space:nowrap">${r.category}</td>`;
+    odHtml+=`<td style="${BORDER}background:${OFF_BG};white-space:nowrap">${r.model}</td>`;
     vals.forEach(v=>{odHtml+=`<td class="num" style="${BORDER}background:${OFF_BG};${v?'font-weight:600;color:#1F2937':'color:#bbb'}">${v||'·'}</td>`;});
     odHtml+=`<td class="num" style="${BORDER}background:${OFF_TOT};font-weight:700">${tot||''}</td></tr>`;
   });
   const odtt=odTotVals.reduce((s,v)=>s+v,0);
-  odHtml+=`<tr style="font-weight:700"><td colspan="2" style="${STICKY_L0}${BORDER}background:${OFF_H};color:#fff;text-align:center">总计</td>`;
+  odHtml+=`<tr style="font-weight:700"><td colspan="2" style="${BORDER}background:${OFF_H};color:#fff;text-align:center">总计</td>`;
   odTotVals.forEach(v=>{odHtml+=`<td class="num" style="${BORDER}background:${OFF_TOT}">${v||''}</td>`;});
   odHtml+=`<td class="num" style="${BORDER}background:${OFF_H};color:#fff">${odtt}</td></tr>`;
   odBody.innerHTML=odHtml;
