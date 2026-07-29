@@ -13,13 +13,9 @@
   }
   *{box-sizing:border-box;margin:0;padding:0}
   body{font-family:-apple-system,"Segoe UI","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--text);padding:18px}
-  .header{color:#1e3a5f;padding:12px 14px 10px 16px;border-left:4px solid #2563eb;margin-bottom:8px}
-  .header h1{font-size:16px;font-weight:800;letter-spacing:.5px;line-height:1.4;white-space:nowrap}
-  .page-title-bar{color:#1e3a5f;padding:10px 4px 6px;display:flex;align-items:center;gap:10px}
-  .page-title-bar .pt-icon{font-size:22px;line-height:1}
-  .page-title-bar .pt-text{font-size:18px;font-weight:700;letter-spacing:.5px}
-  .page-title-bar .pt-sub{margin-left:auto;font-size:11.5px;color:#1e3a5f}
-  .sub-info{font-size:11.5px;color:#1e3a5f;margin-bottom:14px;padding:0 4px 10px;border-bottom:1px solid #d1d5db;line-height:1.7}
+  .header{background:linear-gradient(135deg,#1e3a5f,#2563eb);color:#fff;padding:22px 28px;border-radius:12px;margin-bottom:16px;box-shadow:0 2px 10px rgba(30,58,95,.15)}
+  .header h1{font-size:21px;font-weight:600;letter-spacing:.5px}
+  .header .sub{font-size:12.5px;opacity:.85;margin-top:5px}
   .kpi-table-wrap{margin-bottom:16px}
   .kpi-table{width:100%;border-collapse:separate;border-spacing:0;border-radius:10px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.03);font-size:14px}
   .kpi-table th,.kpi-table td{padding:12px 16px;text-align:center;border:1px solid #fff}
@@ -61,25 +57,14 @@
   #offshore-detail-table th,#offshore-detail-table td{padding:3px 6px;text-align:center;vertical-align:middle}
   #offshore-kit-table th:first-child,#offshore-kit-table td:first-child,
   #offshore-detail-table th:first-child,#offshore-detail-table td:first-child{padding-left:8px}
-  .supplier-tabs{display:flex;flex-direction:column;gap:2px;width:175px;flex-shrink:0}
-  .supplier-tabs .tab{padding:11px 14px;font-size:13.5px;font-weight:500;color:var(--muted);cursor:pointer;border-left:3px solid transparent;border-radius:0 8px 8px 0;transition:all .2s;background:#f9fafb;display:flex;align-items:center;gap:7px}
-  .supplier-tabs .tab .tab-icon{font-size:15px;line-height:1}
-  .supplier-tabs .tab:hover{color:#1F4E79;background:#eef2ff}
-  .supplier-tabs .tab.active{color:#1F4E79;border-left-color:#1F4E79;background:#eef2ff;font-weight:600}
 </style>
 </head>
 <body>
-<div style="display:flex;gap:16px;align-items:flex-start">
-<div style="width:175px;flex-shrink:0">
-  <div class="header">
-    <h1>海外Energy+计划看板</h1>
-  </div>
-  <div class="supplier-tabs" id="supplier-tabs"></div>
+<div class="header">
+  <h1>海外Energy+计划看板</h1>
+  <div class="sub">供应商：为恒 ｜ 到货口径：到港 ｜ 统计范围：2026年1月起到港 ｜ 生成时间：<span id="gen-time"></span></div>
+  <div class="sub" style="margin-top:6px;opacity:.75;font-size:11.5px">口径：已到港=ATA非空(实际到港)；在途=无ATA+有Pick-Up Date(已发货未到港)；生产中=无Pick-Up Date(未发货)+提货计划表9-10月订单</div>
 </div>
-<div style="flex:1;min-width:0">
-
-<div class="page-title-bar" id="page-title-bar"></div>
-<div class="sub-info" id="sub-info"></div>
 
 <div class="kpi-table-wrap">
   <table class="kpi-table" id="demand-table">
@@ -105,7 +90,7 @@
   <div class="chart-box" style="height:240px"><canvas id="chart-month" role="img" aria-label="每月到货分布柱状图">每月到货分布</canvas></div>
 </div>
 
-<div class="card" id="card-kit" style="margin-bottom:14px">
+<div class="card" style="margin-bottom:14px">
   <h2>表一：到货计划表-套件</h2>
   <div style="display:flex;gap:14px;align-items:flex-start">
     <div style="flex:1;min-width:0">
@@ -128,17 +113,17 @@
   </div>
 </div>
 
-<div class="card" id="card-cat" style="margin-bottom:14px">
+<div class="card" style="margin-bottom:14px">
   <h2>各品类到货趋势（2026-按月）</h2>
   <div class="cat-grid" id="cat-grid"></div>
 </div>
 
-<div class="card" id="card-pie" style="margin-bottom:14px">
+<div class="card" style="margin-bottom:14px">
   <h2>品类到货占比</h2>
   <div class="chart-box" style="height:240px"><canvas id="chart-pie" role="img" aria-label="品类到货占比饼图">品类到货占比</canvas></div>
 </div>
 
-<div class="card" id="card-detail">
+<div class="card">
   <h2>表二：到货计划表-明细</h2>
   <div style="display:flex;gap:14px;align-items:flex-start">
     <div style="flex:1;min-width:0">
@@ -162,289 +147,230 @@
   <div class="note" id="note"></div>
 </div>
 
-</div>
-</div>
-
 <div class="footer">Energy+产品每月到货计划 Skill ｜ 数据来源：ODP订单发货进展表 + 为恒提货计划表 + Energy+映射表</div>
 
 <script>
-const RAW={"suppliers": {"为恒": {"summary": {"months": ["2026-02", "2026-03", "2026-04", "2026-06", "2026-07", "2026-08", "2026-09", "2026-10", "2026-11", "2026-12"], "total": [916, 122, 1724, 1154, 2153, 3466, 4166, 5276, 2784, 3036]}, "category_order": ["单相逆变器", "单相高压盒", "三相逆变器", "三相高压盒", "电池包", "电表"], "category_monthly": [{"category": "单相逆变器", "data": [407, 0, 414, 398, 544, 520, 650, 1300, 260, 0], "total": 4493}, {"category": "单相高压盒", "data": [407, 34, 414, 400, 544, 870, 300, 1300, 260, 0], "total": 4529}, {"category": "三相逆变器", "data": [0, 34, 0, 2, 0, 198, 0, 0, 304, 0], "total": 538}, {"category": "三相高压盒", "data": [0, 0, 0, 0, 0, 198, 0, 0, 304, 0], "total": 502}, {"category": "电池包", "data": [0, 54, 804, 276, 828, 1500, 3036, 2208, 1656, 3036], "total": 13398}, {"category": "电表", "data": [102, 0, 92, 78, 237, 180, 180, 468, 0, 0], "total": 1337}], "plan_table": {"months": ["2026-02", "2026-03", "2026-04", "2026-06", "2026-07", "2026-08", "2026-09", "2026-10", "2026-11", "2026-12"], "rows": [{"category": "单相逆变器", "model": "SP-ARSH-10kW-G1", "2026-02": 11, "2026-03": 0, "2026-04": 0, "2026-06": 60, "2026-07": 50, "2026-08": 149, "2026-09": 0, "2026-10": 131, "2026-11": 0, "2026-12": 0, "总计": 401}, {"category": "单相逆变器", "model": "SP-ARSH-5kW-G1", "2026-02": 0, "2026-03": 0, "2026-04": 103, "2026-06": 0, "2026-07": 0, "2026-08": 55, "2026-09": 0, "2026-10": 55, "2026-11": 0, "2026-12": 0, "总计": 213}, {"category": "单相逆变器", "model": "SP-ARSH-6kW-G1", "2026-02": 334, "2026-03": 0, "2026-04": 305, "2026-06": 338, "2026-07": 494, "2026-08": 316, "2026-09": 650, "2026-10": 1114, "2026-11": 260, "2026-12": 0, "总计": 3811}, {"category": "单相逆变器", "model": "SP-ARSH-8kW-G1", "2026-02": 62, "2026-03": 0, "2026-04": 6, "2026-06": 0, "2026-07": 0, "2026-08": 0, "2026-09": 0, "2026-10": 0, "2026-11": 0, "2026-12": 0, "总计": 68}, {"category": "单相高压盒", "model": "SP-RAH-HVB571-G1", "2026-02": 407, "2026-03": 34, "2026-04": 414, "2026-06": 400, "2026-07": 544, "2026-08": 870, "2026-09": 300, "2026-10": 1300, "2026-11": 260, "2026-12": 0, "总计": 4529}, {"category": "三相逆变器", "model": "SP-SRTH-10kW-G1", "2026-02": 0, "2026-03": 0, "2026-04": 0, "2026-06": 0, "2026-07": 0, "2026-08": 132, "2026-09": 0, "2026-10": 0, "2026-11": 202, "2026-12": 0, "总计": 334}, {"category": "三相逆变器", "model": "SP-SRTH-13kW-G1", "2026-02": 0, "2026-03": 0, "2026-04": 0, "2026-06": 0, "2026-07": 0, "2026-08": 66, "2026-09": 0, "2026-10": 0, "2026-11": 102, "2026-12": 0, "总计": 168}, {"category": "三相逆变器", "model": "SP-SRTH-8kW-G1", "2026-02": 0, "2026-03": 34, "2026-04": 0, "2026-06": 2, "2026-07": 0, "2026-08": 0, "2026-09": 0, "2026-10": 0, "2026-11": 0, "2026-12": 0, "总计": 36}, {"category": "三相高压盒", "model": "SP-RH-HVB571-G1", "2026-02": 0, "2026-03": 0, "2026-04": 0, "2026-06": 0, "2026-07": 0, "2026-08": 198, "2026-09": 0, "2026-10": 0, "2026-11": 304, "2026-12": 0, "总计": 502}, {"category": "电池包", "model": "SP-RH-B5K-G1", "2026-02": 0, "2026-03": 54, "2026-04": 804, "2026-06": 276, "2026-07": 828, "2026-08": 1500, "2026-09": 3036, "2026-10": 2208, "2026-11": 1656, "2026-12": 3036, "总计": 13398}, {"category": "电表", "model": "SP-ARSH-MC-G1", "2026-02": 78, "2026-03": 0, "2026-04": 82, "2026-06": 78, "2026-07": 165, "2026-08": 180, "2026-09": 180, "2026-10": 360, "2026-11": 0, "2026-12": 0, "总计": 1123}, {"category": "电表", "model": "SP-SRTH-MC-G1", "2026-02": 24, "2026-03": 0, "2026-04": 10, "2026-06": 0, "2026-07": 72, "2026-08": 0, "2026-09": 0, "2026-10": 108, "2026-11": 0, "2026-12": 0, "总计": 214}]}, "demand_by_group": [{"name": "单相逆变器", "已到港": 1443, "在途": 1490, "生产中": 1950}, {"name": "三相逆变器", "已到港": 36, "在途": 198, "生产中": 304}, {"name": "电池包", "已到港": 1686, "在途": 4812, "生产中": 6900}], "demand_om_labels": {"已到港": "截至4月订单", "在途": "截至7月订单", "生产中": "截至10月订单"}, "totals": {"实际": 13701, "预估": 11096, "合计": 24797}, "offshore": {"months": ["2026-08"], "total": [130], "grand_total": 130, "plan_rows": [{"label": "逆变器", "unit": "套", "2026-08": 25, "总计": 25}, {"label": "电池包", "unit": "台", "2026-08": 80, "总计": 80}], "detail_rows": [{"category": "单相逆变器", "model": "SP-ARSH-10kW-G1", "2026-08": 16, "总计": 16}, {"category": "单相逆变器", "model": "SP-ARSH-6kW-G1", "2026-08": 9, "总计": 9}, {"category": "单相高压盒", "model": "SP-RAH-HVB571-G1", "2026-08": 25, "总计": 25}, {"category": "电池包", "model": "SP-RH-B5K-G1", "2026-08": 80, "总计": 80}]}, "pending_tbd": 888, "pending_etrfill": 0, "label": "为恒WHES"}, "深蓝": {"summary": {"months": ["2026-04", "2026-06", "2026-09"], "total": [24, 32, 157]}, "category_order": ["单相逆变器", "电池包", "工商储柜"], "category_monthly": [{"category": "单相逆变器", "data": [0, 0, 54], "total": 54}, {"category": "电池包", "data": [0, 0, 70], "total": 70}, {"category": "工商储柜", "data": [24, 32, 33], "total": 89}], "plan_table": {"months": ["2026-04", "2026-06", "2026-09"], "rows": [{"category": "单相逆变器", "model": "BlueArk X1 8kw 1P hybrid Inverter", "2026-04": 0, "2026-06": 0, "2026-09": 54, "总计": 54}, {"category": "电池包", "model": "BlueArk X1 8kwh master pack", "2026-04": 0, "2026-06": 0, "2026-09": 54, "总计": 54}, {"category": "电池包", "model": "BlueArk X1 8kwh slave pack", "2026-04": 0, "2026-06": 0, "2026-09": 16, "总计": 16}, {"category": "工商储柜", "model": "BlueArk W10-125K-261", "2026-04": 0, "2026-06": 0, "2026-09": 30, "总计": 30}, {"category": "工商储柜", "model": "BlueArk X5-50K-100", "2026-04": 24, "2026-06": 32, "2026-09": 3, "总计": 59}]}, "demand_by_group": [{"name": "单相逆变器", "已到港": 0, "在途": 0, "生产中": 54}, {"name": "电池包", "已到港": 0, "在途": 0, "生产中": 70}, {"name": "工商储柜", "已到港": 56, "在途": 0, "生产中": 33}], "demand_om_labels": {"已到港": "截至4月订单", "生产中": "截至8月订单"}, "totals": {"实际": 56, "预估": 157, "合计": 213}, "offshore": {"months": [], "total": [], "grand_total": 0, "plan_rows": [], "detail_rows": []}, "pending_tbd": 0, "pending_etrfill": 0, "label": "深蓝BlueArk"}, "固德威": {"summary": {"months": ["2026-06"], "total": [192]}, "category_order": ["单相逆变器", "三相逆变器", "电池包", "电表"], "category_monthly": [{"category": "单相逆变器", "data": [96], "total": 96}, {"category": "三相逆变器", "data": [0], "total": 0}, {"category": "电池包", "data": [96], "total": 96}, {"category": "电表", "data": [0], "total": 0}], "plan_table": {"months": ["2026-06"], "rows": [{"category": "单相逆变器", "model": "TCL-SRSL6G1-AS", "2026-06": 96, "总计": 96}, {"category": "电池包", "model": "TCL-RLB14.3G1-AS", "2026-06": 96, "总计": 96}]}, "demand_by_group": [{"name": "单相逆变器", "已到港": 96, "在途": 0, "生产中": 0}, {"name": "电池包", "已到港": 96, "在途": 0, "生产中": 0}], "demand_om_labels": {"已到港": "截至2月订单"}, "totals": {"实际": 192, "预估": 0, "合计": 192}, "offshore": {"months": [], "total": [], "grand_total": 0, "plan_rows": [], "detail_rows": []}, "pending_tbd": 0, "pending_etrfill": 0, "label": "固德威Goodwe"}}, "default_supplier": "为恒", "generated_at": "2026-07-28 15:41"};
+const DATA = {"summary": {"months": ["2026-02", "2026-03", "2026-04", "2026-06", "2026-07", "2026-08", "2026-09", "2026-10", "2026-11", "2026-12"], "total": [916, 122, 1724, 1154, 2153, 3466, 4166, 5276, 2784, 3036]}, "kpi_by_group": [{"name": "单相逆变器", "实际": 2933, "预估": 1560, "合计": 4493, "待排定": 390}, {"name": "三相逆变器", "实际": 234, "预估": 304, "合计": 538, "待排定": 0}, {"name": "电池包", "实际": 6498, "预估": 6900, "合计": 13398, "待排定": 0}], "category_order": ["单相逆变器", "单相高压盒", "三相逆变器", "三相高压盒", "电池包", "电表"], "category_monthly": [{"category": "单相逆变器", "data": [407, 0, 414, 398, 544, 520, 650, 1300, 260, 0], "total": 4493}, {"category": "单相高压盒", "data": [407, 34, 414, 400, 544, 870, 300, 1300, 260, 0], "total": 4529}, {"category": "三相逆变器", "data": [0, 34, 0, 2, 0, 198, 0, 0, 304, 0], "total": 538}, {"category": "三相高压盒", "data": [0, 0, 0, 0, 0, 198, 0, 0, 304, 0], "total": 502}, {"category": "电池包", "data": [0, 54, 804, 276, 828, 1500, 3036, 2208, 1656, 3036], "total": 13398}, {"category": "电表", "data": [102, 0, 92, 78, 237, 180, 180, 468, 0, 0], "total": 1337}], "plan_table": {"months": ["2026-02", "2026-03", "2026-04", "2026-06", "2026-07", "2026-08", "2026-09", "2026-10", "2026-11", "2026-12"], "rows": [{"category": "单相逆变器", "model": "SP-ARSH-10kW-G1", "2026-02": 11, "2026-03": 0, "2026-04": 0, "2026-06": 60, "2026-07": 50, "2026-08": 149, "2026-09": 0, "2026-10": 131, "2026-11": 0, "2026-12": 0, "总计": 401}, {"category": "单相逆变器", "model": "SP-ARSH-5kW-G1", "2026-02": 0, "2026-03": 0, "2026-04": 103, "2026-06": 0, "2026-07": 0, "2026-08": 55, "2026-09": 0, "2026-10": 55, "2026-11": 0, "2026-12": 0, "总计": 213}, {"category": "单相逆变器", "model": "SP-ARSH-6kW-G1", "2026-02": 334, "2026-03": 0, "2026-04": 305, "2026-06": 338, "2026-07": 494, "2026-08": 316, "2026-09": 650, "2026-10": 1114, "2026-11": 260, "2026-12": 0, "总计": 3811}, {"category": "单相逆变器", "model": "SP-ARSH-8kW-G1", "2026-02": 62, "2026-03": 0, "2026-04": 6, "2026-06": 0, "2026-07": 0, "2026-08": 0, "2026-09": 0, "2026-10": 0, "2026-11": 0, "2026-12": 0, "总计": 68}, {"category": "单相高压盒", "model": "SP-RAH-HVB571-G1", "2026-02": 407, "2026-03": 34, "2026-04": 414, "2026-06": 400, "2026-07": 544, "2026-08": 870, "2026-09": 300, "2026-10": 1300, "2026-11": 260, "2026-12": 0, "总计": 4529}, {"category": "三相逆变器", "model": "SP-SRTH-10kW-G1", "2026-02": 0, "2026-03": 0, "2026-04": 0, "2026-06": 0, "2026-07": 0, "2026-08": 132, "2026-09": 0, "2026-10": 0, "2026-11": 202, "2026-12": 0, "总计": 334}, {"category": "三相逆变器", "model": "SP-SRTH-13kW-G1", "2026-02": 0, "2026-03": 0, "2026-04": 0, "2026-06": 0, "2026-07": 0, "2026-08": 66, "2026-09": 0, "2026-10": 0, "2026-11": 102, "2026-12": 0, "总计": 168}, {"category": "三相逆变器", "model": "SP-SRTH-8kW-G1", "2026-02": 0, "2026-03": 34, "2026-04": 0, "2026-06": 2, "2026-07": 0, "2026-08": 0, "2026-09": 0, "2026-10": 0, "2026-11": 0, "2026-12": 0, "总计": 36}, {"category": "三相高压盒", "model": "SP-RH-HVB571-G1", "2026-02": 0, "2026-03": 0, "2026-04": 0, "2026-06": 0, "2026-07": 0, "2026-08": 198, "2026-09": 0, "2026-10": 0, "2026-11": 304, "2026-12": 0, "总计": 502}, {"category": "电池包", "model": "SP-RH-B5K-G1", "2026-02": 0, "2026-03": 54, "2026-04": 804, "2026-06": 276, "2026-07": 828, "2026-08": 1500, "2026-09": 3036, "2026-10": 2208, "2026-11": 1656, "2026-12": 3036, "总计": 13398}, {"category": "电表", "model": "SP-ARSH-MC-G1", "2026-02": 78, "2026-03": 0, "2026-04": 82, "2026-06": 78, "2026-07": 165, "2026-08": 180, "2026-09": 180, "2026-10": 360, "2026-11": 0, "2026-12": 0, "总计": 1123}, {"category": "电表", "model": "SP-SRTH-MC-G1", "2026-02": 24, "2026-03": 0, "2026-04": 10, "2026-06": 0, "2026-07": 72, "2026-08": 0, "2026-09": 0, "2026-10": 108, "2026-11": 0, "2026-12": 0, "总计": 214}]}, "sku_detail": [{"sku": "GF0700001010", "model": "SP-ARSH-6kW-G1", "category": "单相逆变器", "实际": 2437, "预估": 1374, "合计": 3811}, {"sku": "GF0700001012", "model": "SP-ARSH-10kW-G1", "category": "单相逆变器", "实际": 270, "预估": 131, "合计": 401}, {"sku": "GF0700000085", "model": "SP-ARSH-5kW-G1", "category": "单相逆变器", "实际": 158, "预估": 55, "合计": 213}, {"sku": "GF0700001011", "model": "SP-ARSH-8kW-G1", "category": "单相逆变器", "实际": 68, "预估": 0, "合计": 68}, {"sku": "GF0700000973", "model": "SP-RAH-HVB571-G1", "category": "单相高压盒", "实际": 2933, "预估": 1560, "合计": 4493}, {"sku": "GF0700000089", "model": "SP-RAH-HVB571-G1", "category": "单相高压盒", "实际": 36, "预估": 0, "合计": 36}, {"sku": "GF0700001006", "model": "SP-SRTH-10kW-G1", "category": "三相逆变器", "实际": 132, "预估": 202, "合计": 334}, {"sku": "GF0700001008", "model": "SP-SRTH-13kW-G1", "category": "三相逆变器", "实际": 66, "预估": 102, "合计": 168}, {"sku": "GF0700000087", "model": "SP-SRTH-8kW-G1", "category": "三相逆变器", "实际": 36, "预估": 0, "合计": 36}, {"sku": "GF0700000971", "model": "SP-RH-HVB571-G1", "category": "三相高压盒", "实际": 198, "预估": 304, "合计": 502}, {"sku": "GF0700000940", "model": "SP-RH-B5K-G1", "category": "电池包", "实际": 6464, "预估": 6900, "合计": 13364}, {"sku": "GF0700000040", "model": "SP-RH-B5K-G1", "category": "电池包", "实际": 34, "预估": 0, "合计": 34}, {"sku": "GF0700001437", "model": "SP-ARSH-MC-G1", "category": "电表", "实际": 763, "预估": 360, "合计": 1123}, {"sku": "GF0700001436", "model": "SP-SRTH-MC-G1", "category": "电表", "实际": 106, "预估": 108, "合计": 214}], "category_detail": [{"产品中类": "单相逆变器", "实际": 2933, "预估": 1560}, {"产品中类": "单相高压盒", "实际": 2969, "预估": 1560}, {"产品中类": "三相逆变器", "实际": 234, "预估": 304}, {"产品中类": "三相高压盒", "实际": 198, "预估": 304}, {"产品中类": "电池包", "实际": 6498, "预估": 6900}, {"产品中类": "电表", "实际": 869, "预估": 468}], "pending_tbd": 888, "pending_etrfill": 0, "order_month_labels": {"实际": "截至7月订单", "预估": "截至10月订单", "待排定": "10月订单"}, "demand_by_group": [{"name": "单相逆变器", "已到港": 1443, "在途": 1490, "生产中": 1950}, {"name": "三相逆变器", "已到港": 36, "在途": 198, "生产中": 304}, {"name": "电池包", "已到港": 1686, "在途": 4812, "生产中": 6900}], "demand_om_labels": {"已到港": "截至4月订单", "在途": "截至7月订单", "生产中": "截至10月订单"}, "totals": {"实际": 13701, "预估": 11096, "合计": 24797}, "offshore": {"months": ["2026-08"], "total": [130], "grand_total": 130, "plan_rows": [{"label": "逆变器", "unit": "套", "2026-08": 25, "总计": 25}, {"label": "电池包", "unit": "台", "2026-08": 80, "总计": 80}], "detail_rows": [{"category": "单相逆变器", "model": "SP-ARSH-10kW-G1", "2026-08": 16, "总计": 16}, {"category": "单相逆变器", "model": "SP-ARSH-6kW-G1", "2026-08": 9, "总计": 9}, {"category": "单相高压盒", "model": "SP-RAH-HVB571-G1", "2026-08": 25, "总计": 25}, {"category": "电池包", "model": "SP-RH-B5K-G1", "2026-08": 80, "总计": 80}]}, "generated_at": "2026-07-29 11:50"};
+const C_ACT='#16a34a', C_EST='#f59e0b';
 const CAT_COLORS=['#4F81BD','#C0504D','#9BBB59','#8064A2','#4BACC6','#F79646'];
+document.getElementById('gen-time').textContent=DATA.generated_at;
+
+// 列标题带订单月份备注（仅需求端）
+(function(){
+  const dom=DATA.demand_om_labels||{};
+  if(dom['已到港'])document.getElementById('th-arrived').textContent='已到港（'+dom['已到港']+'）';
+  if(dom['在途'])document.getElementById('th-transit').textContent='在途（'+dom['在途']+'）';
+  if(dom['生产中'])document.getElementById('th-production').textContent='生产中（'+dom['生产中']+'）';
+})();
+
+// 需求端表格：逆变器/电池包，按已到港/在途/生产中
+(function(){
+  const dg=DATA.demand_by_group||[];
+  const inv=dg.filter(g=>g.name.includes('逆变器'));
+  const bat=dg.filter(g=>g.name==='电池包');
+  const invArr=inv.reduce((s,g)=>s+g['已到港'],0);
+  const invTra=inv.reduce((s,g)=>s+g['在途'],0);
+  const invPro=inv.reduce((s,g)=>s+g['生产中'],0);
+  const batArr=bat.length?bat[0]['已到港']:0;
+  const batTra=bat.length?bat[0]['在途']:0;
+  const batPro=bat.length?bat[0]['生产中']:0;
+  const rows=[
+    {label:'逆变器',arr:invArr,tra:invTra,pro:invPro,unit:'套'},
+    {label:'电池包',arr:batArr,tra:batTra,pro:batPro,unit:'台'},
+  ];
+  let html='';
+  rows.forEach(r=>{
+    html+=`<tr><td class="row-label">${r.label}</td>`
+      +`<td class="v-act">${r.arr.toLocaleString()}<span class="unit">${r.unit}</span></td>`
+      +`<td class="v-est">${r.tra.toLocaleString()}<span class="unit">${r.unit}</span></td>`
+      +`<td class="v-tbd">${r.pro.toLocaleString()}<span class="unit">${r.unit}</span></td></tr>`;
+  });
+  document.getElementById('demand-tbody').innerHTML=html;
+})();
+
+// KPI趋势图（需求端到货状态分布，堆叠柱状图）
+const dg2=DATA.demand_by_group||[];
+new Chart(document.getElementById('chart-kpi'),{type:'bar',
+  data:{labels:dg2.map(g=>g.name),datasets:[
+    {label:'已到港',data:dg2.map(g=>g['已到港']),backgroundColor:'#16a34a',barPercentage:0.5,categoryPercentage:0.5},
+    {label:'在途',data:dg2.map(g=>g['在途']),backgroundColor:'#f59e0b',barPercentage:0.5,categoryPercentage:0.5},
+    {label:'生产中',data:dg2.map(g=>g['生产中']),backgroundColor:'#6b7280',barPercentage:0.5,categoryPercentage:0.5},
+  ]},
+  options:{responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{position:'bottom',labels:{boxWidth:12,padding:10,font:{size:12}}},
+      tooltip:{callbacks:{label:c=>c.dataset.label+': '+c.parsed.y.toLocaleString()+' 台/套'}}},
+    scales:{x:{stacked:true,grid:{display:false}},y:{stacked:true,beginAtZero:true,ticks:{callback:v=>v.toLocaleString()}}}}});
+
+const months=DATA.summary.months;
+// 月度柱状图（仅按逆变器维度，不分实际/预估）
+const cm2=DATA.category_monthly;
+const kitCats2=['单相逆变器','三相逆变器'];
+const kitTotal=months.map((m,i)=>cm2.filter(c=>kitCats2.includes(c.category)).reduce((s,c)=>s+c.data[i],0));
+new Chart(document.getElementById('chart-month'),{type:'bar',
+  data:{labels:months,datasets:[
+    {label:'到货量',data:kitTotal,backgroundColor:'#4F81BD',barPercentage:0.4,categoryPercentage:0.7}]},
+  options:{responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.parsed.y.toLocaleString()+' 套'}}},
+    scales:{x:{grid:{display:false}},y:{beginAtZero:true,ticks:{callback:v=>v.toLocaleString()}}}}});
+
+// 品类占比饼图
+const cm=DATA.category_monthly;
+new Chart(document.getElementById('chart-pie'),{type:'doughnut',
+  data:{labels:cm.map(c=>c.category),datasets:[{data:cm.map(c=>c.total),backgroundColor:CAT_COLORS,borderWidth:2,borderColor:'#fff'}]},
+  options:{responsive:true,maintainAspectRatio:false,cutout:'52%',
+    plugins:{legend:{position:'right',labels:{boxWidth:10,boxHeight:10,padding:10,font:{size:11}}},
+    tooltip:{callbacks:{label:c=>c.label+': '+c.parsed.toLocaleString()+' 台 ('+(c.parsed/DATA.totals['合计']*100).toFixed(1)+'%)'}}}}});
+
+// 各品类月度柱状图(3x2网格，不分实际/预估)
+const grid=document.getElementById('cat-grid');
+const shortMonths=months.map(m=>m.split('-')[1]); // 2026-02 → 02
+cm.forEach((c,idx)=>{
+  const d=document.createElement('div');d.className='cat-card';
+  d.innerHTML=`<div class="ct"><span>${c.category}</span><span class="tl">合计 ${c.total.toLocaleString()} 台</span></div><div class="cat-chart"><canvas></canvas></div>`;
+  grid.appendChild(d);
+  new Chart(d.querySelector('canvas'),{type:'bar',
+    data:{labels:shortMonths,datasets:[
+      {label:'到货量',data:c.data,backgroundColor:CAT_COLORS[idx]}]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:x=>x.parsed.y.toLocaleString()+' 台',title:items=>{const i=items[0].dataIndex;return months[i];}}}},
+      scales:{x:{grid:{display:false},ticks:{font:{size:9},maxRotation:0,autoSkip:false}},
+        y:{beginAtZero:true,ticks:{font:{size:9},callback:v=>v>=1000?(v/1000)+'k':v}}}}});
+});
+
+// 到货计划明细表（品类/Model行 × 月份列，不分实际/预估）
+const pt=DATA.plan_table;
+const pmonths=pt.months;
+const ptHead=document.querySelector('#plan-table thead');
+const ptBody=document.querySelector('#plan-table tbody');
+const rows=pt.rows;
+// 月份格式转换 2026-02 -> Feb-26
 const MON3=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 function fmtM(m){const [y,mo]=m.split('-');return MON3[parseInt(mo)-1]+'-'+y.slice(2);}
+// 筛选有数据的月份
+const dataMonths=pmonths.filter(m=>rows.some(r=>r[m]>0));
 const STICKY_L0='position:sticky;left:0;z-index:6;';
 const STICKY_L1='position:sticky;left:80px;z-index:6;';
 const BORDER='border:1px solid #fff;';
-const OFF_H='#534AB7',OFF_BG='#E8E4F0',OFF_TOT='#D4C5E8';
-let charts=[];let activeSupplier=RAW.default_supplier||'为恒';
-
-function destroyCharts(){charts.forEach(c=>{try{c.destroy();}catch(e){}});charts=[];}
-
-function generateTabs(){
-  const tc=document.getElementById('supplier-tabs');
-  const tabIcons={'总览':'📊','为恒':'⚡','深蓝':'🌊','固德威':'🔆'};
-  let h='';
-  h+=`<div class="tab ${activeSupplier==='总览'?'active':''}" data-s="总览"><span class="tab-icon">${tabIcons['总览']}</span>总览</div>`;
-  for(const[k,v] of Object.entries(RAW.suppliers)){
-    h+=`<div class="tab ${k===activeSupplier?'active':''}" data-s="${k}"><span class="tab-icon">${tabIcons[k]||'•'}</span>${v.label||k}</div>`;
-  }
-  tc.innerHTML=h;
-  tc.querySelectorAll('.tab').forEach(t=>{t.onclick=()=>{activeSupplier=t.dataset.s;generateTabs();renderAll(activeSupplier);};});
-}
-
-// 设置页面标题栏和子信息
-function setPageHeader(sk){
-  const tabIcons={'总览':'📊','为恒':'⚡','深蓝':'🌊','固德威':'🔆'};
-  const supColors={'为恒':'#2E8B57','深蓝':'#4F81BD','固德威':'#C0504D'};
-  const S=sk!=='总览'?RAW.suppliers[sk]:null;
-  const label=S?S.label:'各供应商订单总览';
-  const icon=tabIcons[sk]||'•';
-  const colorBar=sk!=='总览'?`<span style="display:inline-block;width:4px;height:20px;background:${supColors[sk]||'#ccc'};border-radius:2px"></span>`:'';
-  document.getElementById('page-title-bar').innerHTML=`${colorBar}<span class="pt-icon">${icon}</span><span class="pt-text">${label}</span><span class="pt-sub">生成时间：${RAW.generated_at}</span>`;
-  document.getElementById('sub-info').innerHTML='口径：已到港=ATA非空(实际到港)；在途=无ATA+有Pick-Up Date(已发货未到港)；生产中=无Pick-Up Date(未发货)+提货计划表9-10月订单 ｜ 统计范围：2026年1月起到港';
-}
-
-// 总览页显示数据：为恒只取逆变器品类，其他供应商取全部品类
-function getDisplayData(k, s){
-  const isWHES=(k==='为恒');
-  const dg=s.demand_by_group||[];
-  const dispDg=isWHES?dg.filter(g=>g.name.includes('逆变器')):dg;
-  const arr=dispDg.reduce((a,g)=>a+g['已到港'],0);
-  const tra=dispDg.reduce((a,g)=>a+g['在途'],0);
-  const pro=dispDg.reduce((a,g)=>a+g['生产中'],0);
-  const cm=s.category_monthly||[];
-  const months=s.summary.months||[];
-  const dispCm=isWHES?cm.filter(c=>['单相逆变器','三相逆变器'].includes(c.category)):cm;
-  const monthly=months.map((m,i)=>dispCm.reduce((s,c)=>s+(c.data[i]||0),0));
-  const tot=monthly.reduce((s,v)=>s+v,0);
-  return {arr,tra,pro,tot,monthly,months,unit:isWHES?'套':'台'};
-}
-
-function renderOverview(){
-  destroyCharts();
-  setPageHeader('总览');
-  // 重建KPI表头：5列（供应商/总量/已到港/在途/生产中）
-  document.querySelector('#demand-table thead').innerHTML='<tr>'
-    +'<th class="h-label">供应商</th>'
-    +'<th class="h-tbd" style="background:#B4C6E7;color:#1F2937">总量</th>'
-    +'<th class="h-act">已到港</th>'
-    +'<th class="h-est">在途</th>'
-    +'<th class="h-tbd">生产中</th>'
-    +'</tr>';
-
-  // 汇总对比表（为恒只显示逆变器，其他显示全部品类）
-  let html='';
-  const supColors={'为恒':'#2E8B57','深蓝':'#4F81BD','固德威':'#C0504D'};
-  for(const[k,s] of Object.entries(RAW.suppliers)){
-    const d=getDisplayData(k,s);
-    html+=`<tr><td class="row-label" style="border-left:3px solid ${supColors[k]||'#ccc'}">${s.label||k}</td>`
-      +`<td class="v-tbd" style="background:#B4C6E7;font-weight:700;color:#1F2937;font-size:18px">${d.tot.toLocaleString()}<span class="unit">${d.unit}</span></td>`
-      +`<td class="v-act">${d.arr.toLocaleString()}<span class="unit">${d.unit}</span></td>`
-      +`<td class="v-est">${d.tra.toLocaleString()}<span class="unit">${d.unit}</span></td>`
-      +`<td class="v-tbd">${d.pro.toLocaleString()}<span class="unit">${d.unit}</span></td></tr>`;
-  }
-  document.getElementById('demand-tbody').innerHTML=html;
-
-  // 对比柱状图（已到港/在途/生产中 by供应商）
-  const supEntries=Object.entries(RAW.suppliers);
-  const labels=supEntries.map(([k,s])=>s.label);
-  const arrData=supEntries.map(([k,s])=>getDisplayData(k,s).arr);
-  const traData=supEntries.map(([k,s])=>getDisplayData(k,s).tra);
-  const proData=supEntries.map(([k,s])=>getDisplayData(k,s).pro);
-  charts.push(new Chart(document.getElementById('chart-kpi'),{type:'bar',
-    data:{labels,datasets:[
-      {label:'已到港',data:arrData,backgroundColor:'#16a34a',barPercentage:0.5,categoryPercentage:0.5,maxBarThickness:50},
-      {label:'在途',data:traData,backgroundColor:'#f59e0b',barPercentage:0.5,categoryPercentage:0.5,maxBarThickness:50},
-      {label:'生产中',data:proData,backgroundColor:'#6b7280',barPercentage:0.5,categoryPercentage:0.5,maxBarThickness:50}]},
-    options:{responsive:true,maintainAspectRatio:false,
-      plugins:{legend:{position:'bottom',labels:{boxWidth:12,padding:10,font:{size:12}}},tooltip:{callbacks:{label:c=>c.dataset.label+': '+c.parsed.y.toLocaleString()+' 台/套'}}},
-      scales:{x:{stacked:true,grid:{display:false}},y:{stacked:true,beginAtZero:true,ticks:{callback:v=>v.toLocaleString()}}}}}));
-
-  // 月度趋势（按供应商堆叠）
-  const allMonths=supEntries.flatMap(([k,s])=>getDisplayData(k,s).months).filter((v,i,a)=>a.indexOf(v)===i).sort();
-  const supColors2={'为恒':'#2E8B57','深蓝':'#4F81BD','固德威':'#C0504D'};
-  const ds=supEntries.map(([k,s])=>{
-    const d=getDisplayData(k,s);
-    return{label:s.label,data:allMonths.map(m=>{const i=d.months.indexOf(m);return i>=0?d.monthly[i]:0;}),backgroundColor:supColors2[k],barPercentage:0.8,categoryPercentage:0.85,maxBarThickness:50};
-  });
-  charts.push(new Chart(document.getElementById('chart-month'),{type:'bar',
-    data:{labels:allMonths,datasets:ds},
-    options:{responsive:true,maintainAspectRatio:false,
-      plugins:{legend:{display:true,position:'bottom',labels:{boxWidth:14,boxHeight:14,padding:12,font:{size:12},usePointStyle:true,pointStyle:'rectRounded'}},tooltip:{callbacks:{label:c=>c.dataset.label+': '+c.parsed.y.toLocaleString()+' 台/套'}}},
-      scales:{x:{grid:{display:false}},y:{beginAtZero:true,ticks:{callback:v=>v.toLocaleString()}}}}}));
-
-  // 总览页只保留KPI表格 + 到货状态分布图 + 每月到货分布图，其余卡片隐藏
-  ['card-kit','card-cat','card-pie','card-detail'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='none';});
-  // note也隐藏
-  const noteEl=document.getElementById('note');if(noteEl)noteEl.parentElement.style.display='none';
-}
-
-function renderAll(sk){
-  if(sk==='总览'){renderOverview();return;}
-  const S=RAW.suppliers[sk];if(!S)return;
-  destroyCharts();
-  setPageHeader(sk);
-  // 恢复显示总览页隐藏的卡片
-  ['card-kit','card-cat','card-pie','card-detail'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='';});
-  const noteParent=document.getElementById('note').parentElement;if(noteParent)noteParent.style.display='';
-  // 重建KPI表头：4列（维度/已到港/在途/生产中）
-  document.querySelector('#demand-table thead').innerHTML='<tr>'
-    +'<th class="h-label">维度</th>'
-    +'<th class="h-act" id="th-arrived">已到港</th>'
-    +'<th class="h-est" id="th-transit">在途</th>'
-    +'<th class="h-tbd" id="th-production">生产中</th>'
-    +'</tr>';
-
-  // KPI表头om_labels
-  const dom=S.demand_om_labels||{};
-  document.getElementById('th-arrived').textContent=dom['已到港']?'已到港（'+dom['已到港']+'）':'已到港';
-  document.getElementById('th-transit').textContent=dom['在途']?'在途（'+dom['在途']+'）':'在途';
-  document.getElementById('th-production').textContent=dom['生产中']?'生产中（'+dom['生产中']+'）':'生产中';
-
-  // KPI表格（动态：逆变器合并，其他品类各自一行）
-  const dg=S.demand_by_group||[];
-  const inv=dg.filter(g=>g.name.includes('逆变器'));
-  const others=dg.filter(g=>!g.name.includes('逆变器'));
-  const rows=[];
-  if(inv.length)rows.push({label:'逆变器',arr:inv.reduce((s,g)=>s+g['已到港'],0),tra:inv.reduce((s,g)=>s+g['在途'],0),pro:inv.reduce((s,g)=>s+g['生产中'],0),unit:'套'});
-  others.forEach(g=>rows.push({label:g.name,arr:g['已到港'],tra:g['在途'],pro:g['生产中'],unit:'台'}));
-  document.getElementById('demand-tbody').innerHTML=rows.map(r=>`<tr><td class="row-label">${r.label}</td><td class="v-act">${r.arr.toLocaleString()}<span class="unit">${r.unit}</span></td><td class="v-est">${r.tra.toLocaleString()}<span class="unit">${r.unit}</span></td><td class="v-tbd">${r.pro.toLocaleString()}<span class="unit">${r.unit}</span></td></tr>`).join('');
-
-  // KPI趋势图
-  charts.push(new Chart(document.getElementById('chart-kpi'),{type:'bar',
-    data:{labels:dg.map(g=>g.name),datasets:[
-      {label:'已到港',data:dg.map(g=>g['已到港']),backgroundColor:'#16a34a',barPercentage:0.5,categoryPercentage:0.5,maxBarThickness:50},
-      {label:'在途',data:dg.map(g=>g['在途']),backgroundColor:'#f59e0b',barPercentage:0.5,categoryPercentage:0.5,maxBarThickness:50},
-      {label:'生产中',data:dg.map(g=>g['生产中']),backgroundColor:'#6b7280',barPercentage:0.5,categoryPercentage:0.5,maxBarThickness:50}]},
-    options:{responsive:true,maintainAspectRatio:false,
-      plugins:{legend:{position:'bottom',labels:{boxWidth:12,padding:10,font:{size:12}}},tooltip:{callbacks:{label:c=>c.dataset.label+': '+c.parsed.y.toLocaleString()+' 台/套'}}},
-      scales:{x:{stacked:true,grid:{display:false}},y:{stacked:true,beginAtZero:true,ticks:{callback:v=>v.toLocaleString()}}}}}));
-
-  const months=S.summary.months;
-  const cm=S.category_monthly;
-
-  // 每月到货分布(逆变器)
-  const kitCats=['单相逆变器','三相逆变器'];
-  const kitTotal=months.map((m,i)=>cm.filter(c=>kitCats.includes(c.category)).reduce((s,c)=>s+c.data[i],0));
-  charts.push(new Chart(document.getElementById('chart-month'),{type:'bar',
-    data:{labels:months,datasets:[{label:'到货量',data:kitTotal,backgroundColor:'#4F81BD',barPercentage:0.4,categoryPercentage:0.7,maxBarThickness:28}]},
-    options:{responsive:true,maintainAspectRatio:false,
-      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.parsed.y.toLocaleString()+' 套'}}},
-      scales:{x:{grid:{display:false}},y:{beginAtZero:true,ticks:{callback:v=>v.toLocaleString()}}}}}));
-
-  // 品类占比饼图
-  charts.push(new Chart(document.getElementById('chart-pie'),{type:'doughnut',
-    data:{labels:cm.map(c=>c.category),datasets:[{data:cm.map(c=>c.total),backgroundColor:CAT_COLORS,borderWidth:2,borderColor:'#fff'}]},
-    options:{responsive:true,maintainAspectRatio:false,cutout:'52%',
-      plugins:{legend:{position:'right',labels:{boxWidth:10,boxHeight:10,padding:10,font:{size:11}}},tooltip:{callbacks:{label:c=>c.label+': '+c.parsed.toLocaleString()+' 台 ('+(c.parsed/(S.totals['合计']||1)*100).toFixed(1)+'%)'}}}}}));
-
-  // 各品类趋势图
-  const grid=document.getElementById('cat-grid');
-  grid.innerHTML='';
-  const shortMonths=months.map(m=>m.split('-')[1]);
-  cm.forEach((c,idx)=>{
-    const d=document.createElement('div');d.className='cat-card';
-    d.innerHTML=`<div class="ct"><span>${c.category}</span><span class="tl">合计 ${c.total.toLocaleString()} 台</span></div><div class="cat-chart"><canvas></canvas></div>`;
-    grid.appendChild(d);
-    charts.push(new Chart(d.querySelector('canvas'),{type:'bar',
-      data:{labels:shortMonths,datasets:[{label:'到货量',data:c.data,backgroundColor:CAT_COLORS[idx],barPercentage:0.5,categoryPercentage:0.7,maxBarThickness:20}]},
-      options:{responsive:true,maintainAspectRatio:false,
-        plugins:{legend:{display:false},tooltip:{callbacks:{label:x=>x.parsed.y.toLocaleString()+' 台',title:items=>months[items[0].dataIndex]}}},
-        scales:{x:{grid:{display:false},ticks:{font:{size:9},maxRotation:0,autoSkip:false}},y:{beginAtZero:true,ticks:{font:{size:9},callback:v=>v>=1000?(v/1000)+'k':v}}}}}));
-  });
-
-  // 表二明细
-  const pt=S.plan_table;
-  const pmonths=pt.months;
-  const ptRows=pt.rows;
-  const dataMonths=pmonths.filter(m=>ptRows.some(r=>r[m]>0));
-  let htr='<tr style="position:sticky;top:0;z-index:10">';
-  htr+=`<th style="${STICKY_L0}${BORDER}background:#1F4E79;color:#fff;width:80px;min-width:80px;max-width:80px;white-space:nowrap">品类</th>`;
-  htr+=`<th style="${STICKY_L1}${BORDER}background:#1F4E79;color:#fff;white-space:nowrap;width:120px;min-width:120px">Model</th>`;
-  dataMonths.forEach(m=>{htr+=`<th style="${BORDER}background:#1F4E79;color:#fff;white-space:nowrap">${fmtM(m)}</th>`;});
-  htr+=`<th style="${BORDER}background:#1F4E79;color:#fff;white-space:nowrap">总计</th></tr>`;
-  document.querySelector('#plan-table thead').innerHTML=htr;
-  let rh='';let cc=null;let cnt=0;let ph='';
-  for(let i=0;i<ptRows.length;i++){
-    const r=ptRows[i];
-    if(r.category!==cc){if(cc!==null&&cnt>1){rh=rh.replace(ph,cnt);}cc=r.category;cnt=1;ph=`__RS${i}__`;rh+=`<tr><td rowspan="${ph}" style="${STICKY_L0}${BORDER}background:#D9E1F2;font-weight:600;vertical-align:middle;width:80px;min-width:80px;max-width:80px;white-space:nowrap">${r.category}</td>`;}
-    else{cnt++;rh+='<tr>';}
-    rh+=`<td style="${STICKY_L1}${BORDER}background:#D9E1F2;white-space:nowrap;width:120px;min-width:120px">${r.model}</td>`;
-    dataMonths.forEach(m=>{const v=r[m];rh+=`<td class="num" style="${BORDER}background:#D9E1F2;${v?'font-weight:600;color:#1F2937':'color:#bbb'}">${v||'·'}</td>`;});
-    rh+=`<td class="num" style="${BORDER}background:#B4C6E7;font-weight:700">${r['总计']||''}</td></tr>`;
-  }
-  if(cnt>1){rh=rh.replace(ph,cnt);}
-  let tr='<tr style="font-weight:700">';
-  tr+=`<td colspan="2" style="${STICKY_L0}${BORDER}background:#1F4E79;color:#fff;text-align:center">总计</td>`;
-  dataMonths.forEach(m=>{const v=ptRows.reduce((s,r)=>s+(r[m]||0),0);tr+=`<td class="num" style="${BORDER}background:#B4C6E7">${v||''}</td>`;});
-  tr+=`<td class="num" style="${BORDER}background:#1F4E79;color:#fff">${ptRows.reduce((s,r)=>s+r['总计'],0)}</td></tr>`;
-  document.querySelector('#plan-table tbody').innerHTML=rh+tr;
-
-  // 表一套件
-  const kitRows=[{label:'逆变器',unit:'套',cats:['单相逆变器','三相逆变器']},{label:'电池包',unit:'台',cats:['电池包']}];
-  let kh='<tr style="position:sticky;top:0;z-index:10">';
-  kh+=`<th style="${STICKY_L0}${BORDER}background:#1F4E79;color:#fff;width:80px;min-width:80px;max-width:80px;white-space:nowrap">维度</th>`;
-  kh+=`<th style="${STICKY_L1}${BORDER}background:#1F4E79;color:#fff;white-space:nowrap;width:60px;min-width:60px">单位</th>`;
-  dataMonths.forEach(m=>{kh+=`<th style="${BORDER}background:#1F4E79;color:#fff;white-space:nowrap;width:52px;min-width:52px">${fmtM(m)}</th>`;});
-  kh+=`<th style="${BORDER}background:#1F4E79;color:#fff;white-space:nowrap;width:52px;min-width:52px">总计</th></tr>`;
-  document.querySelector('#kit-table thead').innerHTML=kh;
-  let khtml='';
-  kitRows.forEach(kr=>{
-    let vals=dataMonths.map(m=>ptRows.filter(r=>kr.cats.includes(r.category)).reduce((s,r)=>s+(r[m]||0),0));
-    const tot=vals.reduce((s,v)=>s+v,0);
-    khtml+=`<tr><td style="${STICKY_L0}${BORDER}background:#D9E1F2;font-weight:600;vertical-align:middle;width:80px;min-width:80px;max-width:80px;white-space:nowrap;text-align:center">${kr.label}</td>`;
-    khtml+=`<td style="${STICKY_L1}${BORDER}background:#D9E1F2;white-space:nowrap;width:60px;min-width:60px;text-align:center">${kr.unit}</td>`;
-    vals.forEach(v=>{khtml+=`<td class="num" style="${BORDER}background:#D9E1F2;${v?'font-weight:600;color:#1F2937':'color:#bbb'}">${v||'·'}</td>`;});
-    khtml+=`<td class="num" style="${BORDER}background:#FFD966;font-weight:700;color:#1F2937;font-size:13px">${tot||''}</td></tr>`;
-  });
-  document.querySelector('#kit-table tbody').innerHTML=khtml;
-
-  // Offshore
-  const off=S.offshore||{};const offMonths=off.months||[];
-  if(offMonths.length>0&&(off.grand_total||0)>0){
-    const okh='<tr style="position:sticky;top:0;z-index:10">';
-    let oh=okh+`<th style="${STICKY_L0}${BORDER}background:${OFF_H};color:#fff;white-space:nowrap">维度</th><th style="${STICKY_L1}${BORDER}background:${OFF_H};color:#fff;white-space:nowrap">单位</th>`;
-    offMonths.forEach(m=>{oh+=`<th style="${BORDER}background:${OFF_H};color:#fff;white-space:nowrap">${fmtM(m)}</th>`;});
-    oh+=`<th style="${BORDER}background:${OFF_H};color:#fff;white-space:nowrap">总计</th></tr>`;
-    document.querySelector('#offshore-kit-table thead').innerHTML=oh;
-    let ob='';
-    (off.plan_rows||[]).forEach(kr=>{let vals=offMonths.map(m=>kr[m]||0);const tot=vals.reduce((s,v)=>s+v,0);
-      ob+=`<tr><td style="${STICKY_L0}${BORDER}background:${OFF_BG};font-weight:600;white-space:nowrap;text-align:center">${kr.label}</td><td style="${STICKY_L1}${BORDER}background:${OFF_BG};white-space:nowrap;text-align:center">${kr.unit}</td>`;
-      vals.forEach(v=>{ob+=`<td class="num" style="${BORDER}background:${OFF_BG};${v?'font-weight:600;color:#1F2937':'color:#bbb'}">${v||'·'}</td>`;});
-      ob+=`<td class="num" style="${BORDER}background:${OFF_TOT};font-weight:700">${tot||''}</td></tr>`;});
-    document.querySelector('#offshore-kit-table tbody').innerHTML=ob;
-    document.getElementById('offshore-kit-wrap').style.display='block';
-    let odh='<tr style="position:sticky;top:0;z-index:10">';
-    odh+=`<th style="${STICKY_L0}${BORDER}background:${OFF_H};color:#fff;white-space:nowrap">品类</th><th style="${STICKY_L1}${BORDER}background:${OFF_H};color:#fff;white-space:nowrap">Model</th>`;
-    offMonths.forEach(m=>{odh+=`<th style="${BORDER}background:${OFF_H};color:#fff;white-space:nowrap">${fmtM(m)}</th>`;});
-    odh+=`<th style="${BORDER}background:${OFF_H};color:#fff;white-space:nowrap">总计</th></tr>`;
-    document.querySelector('#offshore-detail-table thead').innerHTML=odh;
-    let odb='';let otv=offMonths.map(()=>0);
-    (off.detail_rows||[]).forEach(r=>{let vals=offMonths.map(m=>r[m]||0);const tot=vals.reduce((s,v)=>s+v,0);vals.forEach((v,i)=>{otv[i]+=v;});
-      odb+=`<tr><td style="${STICKY_L0}${BORDER}background:${OFF_BG};font-weight:600;white-space:nowrap">${r.category}</td><td style="${STICKY_L1}${BORDER}background:${OFF_BG};white-space:nowrap">${r.model}</td>`;
-      vals.forEach(v=>{odb+=`<td class="num" style="${BORDER}background:${OFF_BG};${v?'font-weight:600;color:#1F2937':'color:#bbb'}">${v||'·'}</td>`;});
-      odb+=`<td class="num" style="${BORDER}background:${OFF_TOT};font-weight:700">${tot||''}</td></tr>`;});
-    const odtt=otv.reduce((s,v)=>s+v,0);
-    odb+=`<tr style="font-weight:700"><td colspan="2" style="${STICKY_L0}${BORDER}background:${OFF_H};color:#fff;text-align:center">总计</td>`;
-    otv.forEach(v=>{odb+=`<td class="num" style="${BORDER}background:${OFF_TOT}">${v||''}</td>`;});
-    odb+=`<td class="num" style="${BORDER}background:${OFF_H};color:#fff">${odtt}</td></tr>`;
-    document.querySelector('#offshore-detail-table tbody').innerHTML=odb;
-    document.getElementById('offshore-detail-wrap').style.display='block';
+// 表头：单行（品类+Model+月份+总计）
+let htr='<tr style="position:sticky;top:0;z-index:10">';
+htr+=`<th style="${STICKY_L0}${BORDER}background:#1F4E79;color:#fff;width:80px;min-width:80px;max-width:80px;white-space:nowrap">品类</th>`;
+htr+=`<th style="${STICKY_L1}${BORDER}background:#1F4E79;color:#fff;white-space:nowrap;width:120px;min-width:120px">Model</th>`;
+dataMonths.forEach(m=>{htr+=`<th style="${BORDER}background:#1F4E79;color:#fff;white-space:nowrap">${fmtM(m)}</th>`;});
+htr+=`<th style="${BORDER}background:#1F4E79;color:#fff;white-space:nowrap">总计</th></tr>`;
+ptHead.innerHTML=htr;
+// 数据行（品类合并rowspan，浅蓝底色）
+let rowsHtml='';let curCat=null;let catCount=0;let catPlaceholder='';
+for(let i=0;i<rows.length;i++){
+  const r=rows[i];
+  if(r.category!==curCat){
+    if(curCat!==null&&catCount>1){rowsHtml=rowsHtml.replace(catPlaceholder,catCount);}
+    curCat=r.category;catCount=1;
+    catPlaceholder=`__RS_${i}__`;
+    rowsHtml+=`<tr><td rowspan="${catPlaceholder}" style="${STICKY_L0}${BORDER}background:#D9E1F2;font-weight:600;vertical-align:middle;width:80px;min-width:80px;max-width:80px;white-space:nowrap">${r.category}</td>`;
   }else{
-    document.getElementById('offshore-kit-wrap').style.display='none';
-    document.getElementById('offshore-detail-wrap').style.display='none';
+    catCount++;
+    rowsHtml+='<tr>';
   }
+  rowsHtml+=`<td style="${STICKY_L1}${BORDER}background:#D9E1F2;white-space:nowrap;width:120px;min-width:120px">${r.model}</td>`;
+  dataMonths.forEach(m=>{const v=r[m];rowsHtml+=`<td class="num" style="${BORDER}background:#D9E1F2;${v?'font-weight:600;color:#1F2937':'color:#bbb'}">${v||'·'}</td>`;});
+  rowsHtml+=`<td class="num" style="${BORDER}background:#B4C6E7;font-weight:700">${r['总计']||''}</td></tr>`;
+}
+if(catCount>1){rowsHtml=rowsHtml.replace(catPlaceholder,catCount);}
+// 总计行
+let tr='<tr style="font-weight:700">';
+tr+=`<td colspan="2" style="${STICKY_L0}${BORDER}background:#1F4E79;color:#fff;text-align:center">总计</td>`;
+dataMonths.forEach(m=>{const v=rows.reduce((s,r)=>s+(r[m]||0),0);tr+=`<td class="num" style="${BORDER}background:#B4C6E7">${v||''}</td>`;});
+const tt=rows.reduce((s,r)=>s+r['总计'],0);
+tr+=`<td class="num" style="${BORDER}background:#1F4E79;color:#fff">${tt}</td></tr>`;
+ptBody.innerHTML=rowsHtml+tr;
 
-  // 底部note
-  let n='';
-  if(S.pending_tbd>0)n+=`📌 待排定 ${S.pending_tbd.toLocaleString()} 台：10月CT1-3柜无提货日，待供应商确认提货计划后纳入统计。<br>`;
-  if((S.offshore||{}).grand_total>0)n+=`📋 Offshore数据 ${S.offshore.grand_total.toLocaleString()} 台已单独展示（直发欧洲客户，未计入主表合计）。<br>`;
-  if(S.pending_etrfill>0)n+=`⚠️ 待补ETR ${S.pending_etrfill.toLocaleString()} 台：需在ODP源补全ETR后重跑。`;
-  document.getElementById('note').innerHTML=n;
+// === 表一：到货计划-套件（逆变器/电池包维度，与表二同月份列结构）===
+const kt=DATA.plan_table;
+const ktHead=document.querySelector('#kit-table thead');
+const ktBody=document.querySelector('#kit-table tbody');
+// 套件数据：逆变器=单相逆变器+三相逆变器，电池包
+const kitRows=[
+  {label:'逆变器',unit:'套',cats:['单相逆变器','三相逆变器']},
+  {label:'电池包',unit:'台',cats:['电池包']},
+];
+// 表头（单行：维度|单位 + 月份 + 总计）
+let kh='<tr style="position:sticky;top:0;z-index:10">';
+kh+=`<th style="${STICKY_L0}${BORDER}background:#1F4E79;color:#fff;width:80px;min-width:80px;max-width:80px;white-space:nowrap">维度</th>`;
+kh+=`<th style="${STICKY_L1}${BORDER}background:#1F4E79;color:#fff;white-space:nowrap;width:60px;min-width:60px">单位</th>`;
+dataMonths.forEach(m=>{kh+=`<th style="${BORDER}background:#1F4E79;color:#fff;white-space:nowrap;width:52px;min-width:52px">${fmtM(m)}</th>`;});
+kh+=`<th style="${BORDER}background:#1F4E79;color:#fff;white-space:nowrap;width:52px;min-width:52px">总计</th></tr>`;
+ktHead.innerHTML=kh;
+// 数据行
+let kitHtml='';
+kitRows.forEach(kr=>{
+  let vals=dataMonths.map(m=>rows.filter(r=>kr.cats.includes(r.category)).reduce((s,r)=>s+(r[m]||0),0));
+  const tot=vals.reduce((s,v)=>s+v,0);
+  kitHtml+=`<tr><td style="${STICKY_L0}${BORDER}background:#D9E1F2;font-weight:600;vertical-align:middle;width:80px;min-width:80px;max-width:80px;white-space:nowrap;text-align:center">${kr.label}</td>`;
+  kitHtml+=`<td style="${STICKY_L1}${BORDER}background:#D9E1F2;white-space:nowrap;width:60px;min-width:60px;text-align:center">${kr.unit}</td>`;
+  vals.forEach(v=>{kitHtml+=`<td class="num" style="${BORDER}background:#D9E1F2;${v?'font-weight:600;color:#1F2937':'color:#bbb'}">${v||'·'}</td>`;});
+  kitHtml+=`<td class="num" style="${BORDER}background:#FFD966;font-weight:700;color:#1F2937;font-size:13px">${tot||''}</td></tr>`;
+});
+ktBody.innerHTML=kitHtml;
+
+// === Offshore表格渲染（直发欧洲客户，紫色系）===
+const OFF_H='#534AB7', OFF_BG='#E8E4F0', OFF_TOT='#D4C5E8';
+const off=DATA.offshore||{};
+const offMonths=off.months||[];
+if(offMonths.length>0 && (off.grand_total||0)>0){
+  // Offshore套件表
+  const okHead=document.querySelector('#offshore-kit-table thead');
+  const okBody=document.querySelector('#offshore-kit-table tbody');
+  let okh='<tr style="position:sticky;top:0;z-index:10">';
+  okh+=`<th style="${STICKY_L0}${BORDER}background:${OFF_H};color:#fff;white-space:nowrap">维度</th>`;
+  okh+=`<th style="${STICKY_L1}${BORDER}background:${OFF_H};color:#fff;white-space:nowrap">单位</th>`;
+  offMonths.forEach(m=>{okh+=`<th style="${BORDER}background:${OFF_H};color:#fff;white-space:nowrap">${fmtM(m)}</th>`;});
+  okh+=`<th style="${BORDER}background:${OFF_H};color:#fff;white-space:nowrap">总计</th></tr>`;
+  okHead.innerHTML=okh;
+  let okHtml='';
+  (off.plan_rows||[]).forEach(kr=>{
+    let vals=offMonths.map(m=>kr[m]||0);
+    const tot=vals.reduce((s,v)=>s+v,0);
+    okHtml+=`<tr><td style="${STICKY_L0}${BORDER}background:${OFF_BG};font-weight:600;white-space:nowrap;text-align:center">${kr.label}</td>`;
+    okHtml+=`<td style="${STICKY_L1}${BORDER}background:${OFF_BG};white-space:nowrap;text-align:center">${kr.unit}</td>`;
+    vals.forEach(v=>{okHtml+=`<td class="num" style="${BORDER}background:${OFF_BG};${v?'font-weight:600;color:#1F2937':'color:#bbb'}">${v||'·'}</td>`;});
+    okHtml+=`<td class="num" style="${BORDER}background:${OFF_TOT};font-weight:700">${tot||''}</td></tr>`;
+  });
+  okBody.innerHTML=okHtml;
+  document.getElementById('offshore-kit-wrap').style.display='block';
+  // Offshore明细表
+  const odHead=document.querySelector('#offshore-detail-table thead');
+  const odBody=document.querySelector('#offshore-detail-table tbody');
+  let odh='<tr style="position:sticky;top:0;z-index:10">';
+  odh+=`<th style="${STICKY_L0}${BORDER}background:${OFF_H};color:#fff;white-space:nowrap">品类</th>`;
+  odh+=`<th style="${STICKY_L1}${BORDER}background:${OFF_H};color:#fff;white-space:nowrap">Model</th>`;
+  offMonths.forEach(m=>{odh+=`<th style="${BORDER}background:${OFF_H};color:#fff;white-space:nowrap">${fmtM(m)}</th>`;});
+  odh+=`<th style="${BORDER}background:${OFF_H};color:#fff;white-space:nowrap">总计</th></tr>`;
+  odHead.innerHTML=odh;
+  let odHtml='';
+  let odTotVals=offMonths.map(()=>0);
+  (off.detail_rows||[]).forEach(r=>{
+    let vals=offMonths.map(m=>r[m]||0);
+    const tot=vals.reduce((s,v)=>s+v,0);
+    vals.forEach((v,i)=>{odTotVals[i]+=v;});
+    odHtml+=`<tr><td style="${STICKY_L0}${BORDER}background:${OFF_BG};font-weight:600;white-space:nowrap">${r.category}</td>`;
+    odHtml+=`<td style="${STICKY_L1}${BORDER}background:${OFF_BG};white-space:nowrap">${r.model}</td>`;
+    vals.forEach(v=>{odHtml+=`<td class="num" style="${BORDER}background:${OFF_BG};${v?'font-weight:600;color:#1F2937':'color:#bbb'}">${v||'·'}</td>`;});
+    odHtml+=`<td class="num" style="${BORDER}background:${OFF_TOT};font-weight:700">${tot||''}</td></tr>`;
+  });
+  const odtt=odTotVals.reduce((s,v)=>s+v,0);
+  odHtml+=`<tr style="font-weight:700"><td colspan="2" style="${STICKY_L0}${BORDER}background:${OFF_H};color:#fff;text-align:center">总计</td>`;
+  odTotVals.forEach(v=>{odHtml+=`<td class="num" style="${BORDER}background:${OFF_TOT}">${v||''}</td>`;});
+  odHtml+=`<td class="num" style="${BORDER}background:${OFF_H};color:#fff">${odtt}</td></tr>`;
+  odBody.innerHTML=odHtml;
+  document.getElementById('offshore-detail-wrap').style.display='block';
 }
 
-generateTabs();
-renderAll(activeSupplier);
+// 说明（待排定 + Offshore + 异常提示）
+let n='';
+if(DATA.pending_tbd>0)n+=`📌 待排定 ${DATA.pending_tbd.toLocaleString()} 台：10月CT1-3柜无提货日，待供应商确认提货计划后纳入统计。<br>`;
+if((DATA.offshore||{}).grand_total>0)n+=`📋 Offshore数据 ${DATA.offshore.grand_total.toLocaleString()} 台已单独展示（直发欧洲客户，未计入主表合计）。<br>`;
+if(DATA.pending_etrfill>0)n+=`⚠️ 待补ETR ${DATA.pending_etrfill.toLocaleString()} 台：ODP中26AUG006等行无日期，需在ODP源补全ETR后重跑(26AUG006的ETR=2026-08-11)。`;
+document.getElementById('note').innerHTML=n;
 </script>
 </body>
 </html>
