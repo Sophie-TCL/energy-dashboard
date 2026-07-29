@@ -298,39 +298,44 @@ kt2Months.forEach(m=>{kh+=`<th style="${BORDER}background:#1F4E79;color:#fff;whi
 kh+=`<th style="${BORDER}background:#1F4E79;color:#fff;white-space:nowrap;width:48px;min-width:48px">总计</th></tr>`;
 ktHead.innerHTML=kh;
 // 数据行（区域列合并 + 品类/品牌/类型列合并）
+// 先计算每组的rowspan值
+const kt2Rows=kt2.rows;
+const regionSpans={},catSpans={};
+for(let i=0;i<kt2Rows.length;i++){
+  const r=kt2Rows[i];
+  const catKey=r.区域+'|'+r.品类+'|'+r.品牌+'|'+r.类型;
+  regionSpans[r.区域]=(regionSpans[r.区域]||0)+1;
+  catSpans[catKey]=(catSpans[catKey]||0)+1;
+}
 let kitHtml='';
-let prevRegion='',regionCnt=0,regionPh='';
-let prevCat='',catCnt=0,catPh='';
-for(let i=0;i<kt2.rows.length;i++){
-  const r=kt2.rows[i];
+let prevRegion='',prevCat='';
+for(let i=0;i<kt2Rows.length;i++){
+  const r=kt2Rows[i];
   const isCTN=r.Unit==='CTN';
   const fmtVal=v=>{if(!v||v===0)return '·';return isCTN?Number(v).toFixed(2):v.toLocaleString();};
-  // 区域合并
   const catKey=r.区域+'|'+r.品类+'|'+r.品牌+'|'+r.类型;
+  kitHtml+='<tr>';
+  // 区域列（首次出现时输出rowspan）
   if(r.区域!==prevRegion){
-    if(prevRegion!==''&&regionCnt>1){kitHtml=kitHtml.replace(regionPh,regionCnt);}
-    prevRegion=r.区域;regionCnt=1;regionPh=`__KR${i}__`;
-    kitHtml+=`<tr><td rowspan="${regionPh}" style="${STICKY_L0}${BORDER}background:#D9E1F2;font-weight:700;white-space:nowrap;text-align:center;vertical-align:middle;width:42px;min-width:42px">${r.区域}</td>`;
-  }else{
-    regionCnt++;
-    kitHtml+='<tr>';
+    kitHtml+=`<td rowspan="${regionSpans[r.区域]}" style="${STICKY_L0}${BORDER}background:#D9E1F2;font-weight:700;white-space:nowrap;text-align:center;vertical-align:middle;width:42px;min-width:42px">${r.区域}</td>`;
+    prevRegion=r.区域;
+    prevCat=''; // 区域变化时重置品类
   }
-  // 品类/品牌/类型合并（同品类组的SET和CTN行合并）
+  // 品类/品牌/类型列（首次出现时输出rowspan）
   if(catKey!==prevCat){
-    if(prevCat!==''&&catCnt>1){kitHtml=kitHtml.replace(catPh,catCnt);}
-    prevCat=catKey;catCnt=1;catPh=`__KC${i}__`;
-    kitHtml+=`<td rowspan="${catPh}" style="${BORDER}background:#D9E1F2;font-weight:600;white-space:nowrap;width:80px;min-width:80px;vertical-align:middle">${r.品类}</td>`;
-    kitHtml+=`<td rowspan="${catPh}" style="${BORDER}background:#D9E1F2;white-space:nowrap;width:60px;min-width:60px;vertical-align:middle">${r.品牌}</td>`;
-    kitHtml+=`<td rowspan="${catPh}" style="${BORDER}background:#D9E1F2;white-space:nowrap;text-align:center;width:42px;min-width:42px;vertical-align:middle">${r.类型}</td>`;
-  }else{
-    catCnt++;
+    kitHtml+=`<td rowspan="${catSpans[catKey]}" style="${BORDER}background:#D9E1F2;font-weight:600;white-space:nowrap;width:80px;min-width:80px;vertical-align:middle">${r.品类}</td>`;
+    kitHtml+=`<td rowspan="${catSpans[catKey]}" style="${BORDER}background:#D9E1F2;white-space:nowrap;width:60px;min-width:60px;vertical-align:middle">${r.品牌}</td>`;
+    kitHtml+=`<td rowspan="${catSpans[catKey]}" style="${BORDER}background:#D9E1F2;white-space:nowrap;text-align:center;width:42px;min-width:42px;vertical-align:middle">${r.类型}</td>`;
+    prevCat=catKey;
   }
+  // Unit列（每行都输出）
   kitHtml+=`<td style="${BORDER}background:#D9E1F2;white-space:nowrap;text-align:center;width:38px;min-width:38px;font-weight:600">${r.Unit}</td>`;
+  // 月份列
   kt2Months.forEach(m=>{const v=r[m]||0;kitHtml+=`<td class="num" style="${BORDER}background:#D9E1F2;${v?'font-weight:600;color:#1F2937':'color:#bbb'}">${fmtVal(v)}</td>`;});
-  kitHtml+=`<td class="num" style="${BORDER}background:#FFD966;font-weight:700;color:#1F2937;font-size:12px">${fmtVal(r.总计)}</td></tr>`;
+  // 总计列
+  kitHtml+=`<td class="num" style="${BORDER}background:#FFD966;font-weight:700;color:#1F2937;font-size:12px">${fmtVal(r.总计)}</td>`;
+  kitHtml+='</tr>';
 }
-if(regionCnt>1){kitHtml=kitHtml.replace(regionPh,regionCnt);}
-if(catCnt>1){kitHtml=kitHtml.replace(catPh,catCnt);}
 ktBody.innerHTML=kitHtml;
 
 // === Offshore表格渲染（直发欧洲客户，紫色系）===
