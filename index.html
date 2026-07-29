@@ -13,9 +13,13 @@
   }
   *{box-sizing:border-box;margin:0;padding:0}
   body{font-family:-apple-system,"Segoe UI","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--text);padding:18px}
-  .header{background:linear-gradient(135deg,#1e3a5f,#2563eb);color:#fff;padding:22px 28px;border-radius:12px;margin-bottom:16px;box-shadow:0 2px 10px rgba(30,58,95,.15)}
-  .header h1{font-size:21px;font-weight:600;letter-spacing:.5px}
-  .header .sub{font-size:12.5px;opacity:.85;margin-top:5px}
+  .header{background:linear-gradient(135deg,#1e3a5f,#2563eb);color:#fff;padding:18px 16px;border-radius:12px;margin-bottom:8px;box-shadow:0 2px 10px rgba(30,58,95,.15)}
+  .header h1{font-size:15px;font-weight:600;letter-spacing:.3px;line-height:1.5}
+  .page-title-bar{background:linear-gradient(135deg,#1e3a5f,#2563eb);color:#fff;padding:14px 22px;border-radius:10px;margin-bottom:10px;display:flex;align-items:center;gap:10px;box-shadow:0 2px 8px rgba(30,58,95,.12)}
+  .page-title-bar .pt-icon{font-size:22px;line-height:1}
+  .page-title-bar .pt-text{font-size:18px;font-weight:600;letter-spacing:.5px}
+  .page-title-bar .pt-sub{margin-left:auto;font-size:11.5px;opacity:.8}
+  .sub-info{font-size:11.5px;color:var(--muted);margin-bottom:12px;padding:0 4px;line-height:1.7}
   .kpi-table-wrap{margin-bottom:16px}
   .kpi-table{width:100%;border-collapse:separate;border-spacing:0;border-radius:10px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.03);font-size:14px}
   .kpi-table th,.kpi-table td{padding:12px 16px;text-align:center;border:1px solid #fff}
@@ -57,22 +61,25 @@
   #offshore-detail-table th,#offshore-detail-table td{padding:3px 6px;text-align:center;vertical-align:middle}
   #offshore-kit-table th:first-child,#offshore-kit-table td:first-child,
   #offshore-detail-table th:first-child,#offshore-detail-table td:first-child{padding-left:8px}
-  .supplier-tabs{display:flex;flex-direction:column;gap:2px;width:130px;flex-shrink:0}
-  .supplier-tabs .tab{padding:12px 16px;font-size:14px;font-weight:500;color:var(--muted);cursor:pointer;border-left:3px solid transparent;border-radius:0 8px 8px 0;transition:all .2s;background:#f9fafb}
+  .supplier-tabs{display:flex;flex-direction:column;gap:2px;width:150px;flex-shrink:0}
+  .supplier-tabs .tab{padding:11px 14px;font-size:13.5px;font-weight:500;color:var(--muted);cursor:pointer;border-left:3px solid transparent;border-radius:0 8px 8px 0;transition:all .2s;background:#f9fafb;display:flex;align-items:center;gap:7px}
+  .supplier-tabs .tab .tab-icon{font-size:15px;line-height:1}
   .supplier-tabs .tab:hover{color:#1F4E79;background:#eef2ff}
   .supplier-tabs .tab.active{color:#1F4E79;border-left-color:#1F4E79;background:#eef2ff;font-weight:600}
 </style>
 </head>
 <body>
-<div class="header">
-  <h1>海外Energy+计划看板</h1>
-  <div class="sub">供应商：为恒WHES / 深蓝BlueArk / 固德威Goodwe ｜ 到货口径：到港 ｜ 统计范围：2026年1月起到港 ｜ 生成时间：<span id="gen-time"></span></div>
-  <div class="sub" style="margin-top:6px;opacity:.75;font-size:11.5px">口径：已到港=ATA非空(实际到港)；在途=无ATA+有Pick-Up Date(已发货未到港)；生产中=无Pick-Up Date(未发货)+提货计划表9-10月订单</div>
-</div>
-
 <div style="display:flex;gap:16px;align-items:flex-start">
-<div class="supplier-tabs" id="supplier-tabs"></div>
+<div style="width:150px;flex-shrink:0">
+  <div class="header">
+    <h1>海外Energy+计划看板</h1>
+  </div>
+  <div class="supplier-tabs" id="supplier-tabs"></div>
+</div>
 <div style="flex:1;min-width:0">
+
+<div class="page-title-bar" id="page-title-bar"></div>
+<div class="sub-info" id="sub-info"></div>
 
 <div class="kpi-table-wrap">
   <table class="kpi-table" id="demand-table">
@@ -175,13 +182,26 @@ function destroyCharts(){charts.forEach(c=>{try{c.destroy();}catch(e){}});charts
 
 function generateTabs(){
   const tc=document.getElementById('supplier-tabs');
+  const tabIcons={'总览':'📊','为恒':'⚡','深蓝':'🌊','固德威':'🔆'};
   let h='';
-  h+=`<div class="tab ${activeSupplier==='总览'?'active':''}" data-s="总览">总览</div>`;
+  h+=`<div class="tab ${activeSupplier==='总览'?'active':''}" data-s="总览"><span class="tab-icon">${tabIcons['总览']}</span>总览</div>`;
   for(const[k,v] of Object.entries(RAW.suppliers)){
-    h+=`<div class="tab ${k===activeSupplier?'active':''}" data-s="${k}">${v.label||k}</div>`;
+    h+=`<div class="tab ${k===activeSupplier?'active':''}" data-s="${k}"><span class="tab-icon">${tabIcons[k]||'•'}</span>${v.label||k}</div>`;
   }
   tc.innerHTML=h;
   tc.querySelectorAll('.tab').forEach(t=>{t.onclick=()=>{activeSupplier=t.dataset.s;generateTabs();renderAll(activeSupplier);};});
+}
+
+// 设置页面标题栏和子信息
+function setPageHeader(sk){
+  const tabIcons={'总览':'📊','为恒':'⚡','深蓝':'🌊','固德威':'🔆'};
+  const supColors={'为恒':'#2E8B57','深蓝':'#4F81BD','固德威':'#C0504D'};
+  const S=sk!=='总览'?RAW.suppliers[sk]:null;
+  const label=S?S.label:'总览';
+  const icon=tabIcons[sk]||'•';
+  const colorBar=sk!=='总览'?`<span style="display:inline-block;width:4px;height:20px;background:${supColors[sk]||'#ccc'};border-radius:2px"></span>`:'';
+  document.getElementById('page-title-bar').innerHTML=`${colorBar}<span class="pt-icon">${icon}</span><span class="pt-text">${label}</span><span class="pt-sub">生成时间：${RAW.generated_at}</span>`;
+  document.getElementById('sub-info').innerHTML='口径：已到港=ATA非空(实际到港)；在途=无ATA+有Pick-Up Date(已发货未到港)；生产中=无Pick-Up Date(未发货)+提货计划表9-10月订单 ｜ 统计范围：2026年1月起到港';
 }
 
 // 总览页显示数据：为恒只取逆变器品类，其他供应商取全部品类
@@ -202,7 +222,7 @@ function getDisplayData(k, s){
 
 function renderOverview(){
   destroyCharts();
-  document.getElementById('gen-time').textContent=RAW.generated_at;
+  setPageHeader('总览');
   // 重建KPI表头：5列（供应商/总量/已到港/在途/生产中）
   document.querySelector('#demand-table thead').innerHTML='<tr>'
     +'<th class="h-label">供应商</th>'
@@ -263,7 +283,7 @@ function renderAll(sk){
   if(sk==='总览'){renderOverview();return;}
   const S=RAW.suppliers[sk];if(!S)return;
   destroyCharts();
-  document.getElementById('gen-time').textContent=RAW.generated_at;
+  setPageHeader(sk);
   // 恢复显示总览页隐藏的卡片
   ['card-kit','card-cat','card-pie','card-detail'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='';});
   const noteParent=document.getElementById('note').parentElement;if(noteParent)noteParent.style.display='';
