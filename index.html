@@ -313,13 +313,15 @@ for(let i=0;i<kt2Rows.length;i++){
   const r=kt2Rows[i];
   const isCTN=r.Unit==='CTN';
   const fmtVal=v=>{if(!v||v===0)return '·';return isCTN?Number(v).toFixed(2):v.toLocaleString();};
+  const rowBg=isCTN?'#E8E4F0':'#D9E1F2';  // CTN行用淡紫，SET/pcs行用浅蓝
+  const totBg=isCTN?'#B4A7D6':'#FFD966';   // CTN总计用紫色，SET/pcs总计用黄色
   const catKey=r.区域+'|'+r.品类+'|'+r.品牌+'|'+r.类型;
   kitHtml+='<tr>';
   // 区域列（首次出现时输出rowspan）
   if(r.区域!==prevRegion){
     kitHtml+=`<td rowspan="${regionSpans[r.区域]}" style="${STICKY_L0}${BORDER}background:#D9E1F2;font-weight:700;white-space:nowrap;text-align:center;vertical-align:middle;width:42px;min-width:42px">${r.区域}</td>`;
     prevRegion=r.区域;
-    prevCat=''; // 区域变化时重置品类
+    prevCat='';
   }
   // 品类/品牌/类型列（首次出现时输出rowspan）
   if(catKey!==prevCat){
@@ -328,15 +330,28 @@ for(let i=0;i<kt2Rows.length;i++){
     kitHtml+=`<td rowspan="${catSpans[catKey]}" style="${BORDER}background:#D9E1F2;white-space:nowrap;text-align:center;width:42px;min-width:42px;vertical-align:middle">${r.类型}</td>`;
     prevCat=catKey;
   }
-  // Unit列（每行都输出）
-  kitHtml+=`<td style="${BORDER}background:#D9E1F2;white-space:nowrap;text-align:center;width:38px;min-width:38px;font-weight:600">${r.Unit}</td>`;
+  // Unit列
+  kitHtml+=`<td style="${BORDER}background:${rowBg};white-space:nowrap;text-align:center;width:38px;min-width:38px;font-weight:600">${r.Unit}</td>`;
   // 月份列
-  kt2Months.forEach(m=>{const v=r[m]||0;kitHtml+=`<td class="num" style="${BORDER}background:#D9E1F2;${v?'font-weight:600;color:#1F2937':'color:#bbb'}">${fmtVal(v)}</td>`;});
+  kt2Months.forEach(m=>{const v=r[m]||0;kitHtml+=`<td class="num" style="${BORDER}background:${rowBg};${v?'font-weight:600;color:#1F2937':'color:#bbb'}">${fmtVal(v)}</td>`;});
   // 总计列
-  kitHtml+=`<td class="num" style="${BORDER}background:#FFD966;font-weight:700;color:#1F2937;font-size:12px">${fmtVal(r.总计)}</td>`;
+  kitHtml+=`<td class="num" style="${BORDER}background:${totBg};font-weight:700;color:#1F2937;font-size:12px">${fmtVal(r.总计)}</td>`;
   kitHtml+='</tr>';
 }
 ktBody.innerHTML=kitHtml;
+
+// 表一下方总结：欧洲普货柜/DG柜
+let euPuhuoCTN=0, euDGCTN=0;
+kt2.rows.forEach(r=>{
+  if(r.区域==='欧洲'&&r.Unit==='CTN'){
+    if(r.类型==='普货') euPuhuoCTN+=r.总计;
+    else if(r.类型==='DG') euDGCTN+=r.总计;
+  }
+});
+const kitSummary=document.createElement('div');
+kitSummary.style.cssText='margin-top:8px;padding:6px 12px;background:#f0f4ff;border-radius:6px;font-size:12px;color:#1e3a5f;font-weight:600';
+kitSummary.innerHTML=`欧洲：普货柜共计 <span style="font-size:14px;color:#2563eb">${euPuhuoCTN.toFixed(2)}</span> 40HQ，DG柜共计 <span style="font-size:14px;color:#C0504D">${euDGCTN.toFixed(2)}</span> 40HQ`;
+document.getElementById('kit-table').parentElement.appendChild(kitSummary);
 
 // === Offshore表格渲染（直发欧洲客户，紫色系）===
 const OFF_H='#534AB7', OFF_BG='#E8E4F0', OFF_TOT='#D4C5E8';
