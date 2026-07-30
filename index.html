@@ -334,8 +334,8 @@ for(let i=0;i<kt2Rows.length;i++){
   kitHtml+=`<td style="${BORDER}background:${rowBg};white-space:nowrap;text-align:center;width:38px;min-width:38px;font-weight:600">${r.Unit}</td>`;
   // 月份列
   kt2Months.forEach(m=>{const v=r[m]||0;kitHtml+=`<td class="num" style="${BORDER}background:${rowBg};${v?'font-weight:600;color:#1F2937':'color:#bbb'}">${fmtVal(v)}</td>`;});
-  // 总计列
-  kitHtml+=`<td class="num" style="${BORDER}background:${totBg};font-weight:700;color:#1F2937;font-size:12px">${fmtVal(r.总计)}</td>`;
+  // 总计列（和月份列同底色）
+  kitHtml+=`<td class="num" style="${BORDER}background:${rowBg};font-weight:700;color:#1F2937;font-size:12px">${fmtVal(r.总计)}</td>`;
   kitHtml+='</tr>';
 }
 ktBody.innerHTML=kitHtml;
