@@ -74,6 +74,7 @@
         <th class="h-act" id="th-arrived">已到港</th>
         <th class="h-est" id="th-transit">在途</th>
         <th class="h-tbd" id="th-production">生产中</th>
+        <th class="h-label">总计</th>
       </tr>
     </thead>
     <tbody id="demand-tbody"></tbody>
@@ -176,10 +177,12 @@ document.getElementById('gen-time').textContent=DATA.generated_at;
   ];
   let html='';
   rows.forEach(r=>{
+    const tot=r.arr+r.tra+r.pro;
     html+=`<tr><td class="row-label">${r.label}</td>`
       +`<td class="v-act">${r.arr.toLocaleString()}<span class="unit">${r.unit}</span></td>`
       +`<td class="v-est">${r.tra.toLocaleString()}<span class="unit">${r.unit}</span></td>`
-      +`<td class="v-tbd">${r.pro.toLocaleString()}<span class="unit">${r.unit}</span></td></tr>`;
+      +`<td class="v-tbd">${r.pro.toLocaleString()}<span class="unit">${r.unit}</span></td>`
+      +`<td class="row-label" style="font-size:18px">${tot.toLocaleString()}<span class="unit">${r.unit}</span></td></tr>`;
   });
   document.getElementById('demand-tbody').innerHTML=html;
 })();
