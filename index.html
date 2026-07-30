@@ -91,7 +91,7 @@
 </div>
 
 <div class="card" style="margin-bottom:14px">
-  <h2>表一：到货计划表-套件</h2>
+  <h2>表一：到货计划表-套件 <span id="kit-summary" style="font-size:12px;font-weight:600;margin-left:12px"></span></h2>
   <div class="table-wrap" style="max-height:320px;overflow:auto">
     <table id="kit-table" style="font-size:11.5px;border-collapse:separate;border-spacing:0">
       <thead></thead>
@@ -340,7 +340,7 @@ for(let i=0;i<kt2Rows.length;i++){
 }
 ktBody.innerHTML=kitHtml;
 
-// 表一下方总结：欧洲普货柜/DG柜
+// 表一标题后总结：欧洲普货柜/DG柜
 let euPuhuoCTN=0, euDGCTN=0;
 kt2.rows.forEach(r=>{
   if(r.区域==='欧洲'&&r.Unit==='CTN'){
@@ -348,10 +348,10 @@ kt2.rows.forEach(r=>{
     else if(r.类型==='DG') euDGCTN+=r.总计;
   }
 });
-const kitSummary=document.createElement('div');
-kitSummary.style.cssText='margin-top:8px;padding:6px 12px;background:#f0f4ff;border-radius:6px;font-size:12px;color:#1e3a5f;font-weight:600';
-kitSummary.innerHTML=`欧洲：普货柜共计 <span style="font-size:14px;color:#2563eb">${euPuhuoCTN.toFixed(2)}</span> 40HQ，DG柜共计 <span style="font-size:14px;color:#C0504D">${euDGCTN.toFixed(2)}</span> 40HQ`;
-document.getElementById('kit-table').parentElement.appendChild(kitSummary);
+const kitSummary=document.getElementById('kit-summary');
+if(kitSummary){
+  kitSummary.innerHTML=`| 欧洲 普货柜共计 <span style="color:#2563eb">${euPuhuoCTN.toFixed(2)}</span> 40HQ，DG柜共计 <span style="color:#C0504D">${euDGCTN.toFixed(2)}</span> 40HQ`;
+}
 
 // === Offshore表格渲染（直发欧洲客户，紫色系）===
 const OFF_H='#534AB7', OFF_BG='#E8E4F0', OFF_TOT='#D4C5E8';
