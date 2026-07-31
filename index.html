@@ -67,7 +67,7 @@
 </div>
 
 <div class="kpi-table-wrap">
-  <div style="font-size:11px;color:#6b7280;margin-bottom:4px;font-weight:500">仅限为恒订单数据</div>
+  <div style="font-size:11px;color:#C0504D;margin-bottom:4px;font-weight:600">仅限为恒订单数据</div>
   <table class="kpi-table" id="demand-table">
     <thead>
       <tr>
@@ -252,9 +252,9 @@ const BORDER='border:1px solid #fff;';
 let htr='<tr style="position:sticky;top:0;z-index:10">';
 htr+=`<th style="${STICKY_L0}${BORDER}background:#1F4E79;color:#fff;width:42px;min-width:42px;white-space:nowrap">区域</th>`;
 htr+=`<th style="${STICKY_L1}${BORDER}background:#1F4E79;color:#fff;width:70px;min-width:70px;white-space:nowrap">品类</th>`;
-htr+=`<th style="${BORDER}background:#1F4E79;color:#fff;white-space:nowrap;width:100px;min-width:100px">Model</th>`;
-dataMonths.forEach(m=>{htr+=`<th style="${BORDER}background:#1F4E79;color:#fff;white-space:nowrap">${fmtM(m)}</th>`;});
-htr+=`<th style="${BORDER}background:#1F4E79;color:#fff;white-space:nowrap">总计</th></tr>`;
+htr+=`<th style="${BORDER}background:#1F4E79;color:#fff;white-space:nowrap;width:110px;min-width:110px;text-align:center">Model</th>`;
+dataMonths.forEach(m=>{htr+=`<th style="${BORDER}background:#1F4E79;color:#fff;white-space:nowrap;width:48px;min-width:48px;text-align:center">${fmtM(m)}</th>`;});
+htr+=`<th style="${BORDER}background:#1F4E79;color:#fff;white-space:nowrap;width:48px;min-width:48px;text-align:center">总计</th></tr>`;
 ptHead.innerHTML=htr;
 // 预计算rowspan
 const regionSpans2={},catSpans2={};
@@ -281,11 +281,11 @@ for(let i=0;i<rows.length;i++){
     prevC2=ck;
   }
   // Model列
-  rowsHtml+=`<td style="${BORDER}background:#D9E1F2;white-space:nowrap;width:100px;min-width:100px">${r.model}</td>`;
+  rowsHtml+=`<td style="${BORDER}background:#D9E1F2;white-space:nowrap;width:110px;min-width:110px;text-align:center">${r.model}</td>`;
   // 月份列
-  dataMonths.forEach(m=>{const v=r[m];rowsHtml+=`<td class="num" style="${BORDER}background:#D9E1F2;${v?'font-weight:600;color:#1F2937':'color:#bbb'}">${v||'·'}</td>`;});
+  dataMonths.forEach(m=>{const v=r[m];rowsHtml+=`<td class="num" style="${BORDER}background:#D9E1F2;text-align:center;${v?'font-weight:600;color:#1F2937':'color:#bbb'}">${v||'·'}</td>`;});
   // 总计列
-  rowsHtml+=`<td class="num" style="${BORDER}background:#B4C6E7;font-weight:700">${r['总计']||''}</td></tr>`;
+  rowsHtml+=`<td class="num" style="${BORDER}background:#B4C6E7;font-weight:700;text-align:center">${r['总计']||''}</td></tr>`;
 }
 // 总计行
 let tr='<tr style="font-weight:700">';
@@ -439,7 +439,7 @@ if(offMonths.length>0 && (off.grand_total||0)>0){
 
 // 说明（待排定 + Offshore + 异常提示）
 let n='';
-if(DATA.pending_tbd>0)n+=`📌 待排定 ${DATA.pending_tbd.toLocaleString()} 台：10月CT1-3柜无提货日，待供应商确认提货计划后纳入统计。<br>`;
+if(DATA.pending_tbd>0)n+=`📌 待排定 ${DATA.pending_tbd.toLocaleString()} 台，无预计ETR，不包含在表一表二统计，包含在KPI数据中，待供应商确认提货计划后纳入统计。<br>`;
 if((DATA.offshore||{}).grand_total>0)n+=`📋 Offshore数据 ${DATA.offshore.grand_total.toLocaleString()} 台已单独展示（直发欧洲客户，未计入主表合计）。<br>`;
 if(DATA.pending_etrfill>0)n+=`⚠️ 待补ETR ${DATA.pending_etrfill.toLocaleString()} 台：ODP中26AUG006等行无日期，需在ODP源补全ETR后重跑(26AUG006的ETR=2026-08-11)。`;
 document.getElementById('note').innerHTML=n;
