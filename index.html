@@ -402,7 +402,7 @@ if(offMonths.length>0 && (off.grand_total||0)>0){
   const offInvSet=(off.plan_rows||[]).find(r=>r.label==='逆变器');
   const offInvNum=offInvSet?(offInvSet['总计']||0):0;
   const offKitNote=document.getElementById('offshore-kit-note');
-  if(offKitNote&&offInvNum>0) offKitNote.innerHTML=`Offshore订单${offInvNum}套数据已单独展示（直发欧洲客户，未计入主表数据）`;
+  if(offKitNote&&offInvNum>0){offKitNote.innerHTML=`Offshore订单${offInvNum}套数据已单独展示（直发欧洲客户，未计入主表数据）`;offKitNote.style.display='block';}
   // Offshore明细表
   const odHead=document.querySelector('#offshore-detail-table thead');
   const odBody=document.querySelector('#offshore-detail-table tbody');
