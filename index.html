@@ -397,7 +397,7 @@ if(offMonths.length>0 && (off.grand_total||0)>0){
   // Offshore 20GP总结
   const gp20=off.gp20_count||0;
   const gp20El=document.getElementById('offshore-gp20');
-  if(gp20El&&gp20>0) gp20El.innerHTML=`| 共计 <span style="color:#C0504D;font-weight:700">${gp20}</span> 20GP`;
+  if(gp20El&&gp20>0) gp20El.innerHTML=`| CTN: <span style="color:#C0504D;font-weight:700">${gp20}</span> 20GP`;
   // Offshore套件备注（逆变器套数）
   const offInvSet=(off.plan_rows||[]).find(r=>r.label==='逆变器');
   const offInvNum=offInvSet?(offInvSet['总计']||0):0;
