@@ -474,14 +474,46 @@ if(podMonths.length>0 && podRows.length>0){
   podMonths.forEach(m=>{ph+=`<th style="${BORDER}background:#1F4E79;color:#fff;white-space:nowrap;width:44px;min-width:44px">${fmtM(m)}</th>`;});
   ph+=`<th style="${BORDER}background:#1F4E79;color:#fff;white-space:nowrap;width:48px;min-width:48px">合计</th></tr>`;
   podHead.innerHTML=ph;
-  // 区域rowspan
+  // 按 区域+类型 分组计算小计
+  const podGroups={};
+  podRows.forEach(r=>{
+    const k=r.区域+'|'+r.类型;
+    if(!podGroups[k]) podGroups[k]={区域:r.区域,类型:r.类型,months:{},total:0};
+    podMonths.forEach(m=>{podGroups[k].months[m]=(podGroups[k].months[m]||0)+(r[m]||0);});
+    podGroups[k].total+=r['合计']||0;
+  });
+  // 区域rowspan（欧洲加2个小计行，非欧不加）
   const podRegionSpans={};
   podRows.forEach(r=>{podRegionSpans[r.区域]=(podRegionSpans[r.区域]||0)+1;});
+  if(podRegionSpans['欧洲']) podRegionSpans['欧洲']+=2;
+  // 渲染小计行的函数
+  function podSubtotalRow(group){
+    const subBg='#D9E1F2';
+    let h=`<td style="${BORDER}background:${subBg};text-align:center;font-weight:700;white-space:nowrap">小计</td>`;
+    h+=`<td style="${BORDER}background:${subBg}"></td>`;
+    podMonths.forEach(m=>{
+      const v=group.months[m]||0;
+      h+=`<td class="num" style="${BORDER}background:${subBg};font-weight:700;${v?'color:#1F2937':'color:#bbb'}">${v||'-'}</td>`;
+    });
+    h+=`<td class="num" style="${BORDER}background:${subBg};font-weight:700">${group.total}</td>`;
+    return h;
+  }
   // 数据行
   let podHtml='';
   let prevRegion='';
+  let prevType='';
   for(let i=0;i<podRows.length;i++){
     const r=podRows[i];
+    // 同区域内类型变化时，插入前一个类型的小计（仅欧洲）
+    if(r.区域===prevRegion && r.类型!==prevType && prevRegion==='欧洲' && prevType){
+      const sub=podGroups[prevRegion+'|'+prevType];
+      podHtml+='<tr>'+podSubtotalRow(sub)+'</tr>';
+    }
+    // 区域变化时，如果是欧洲且有前一个类型，插入小计
+    if(r.区域!==prevRegion && prevRegion==='欧洲' && prevType){
+      const sub=podGroups[prevRegion+'|'+prevType];
+      podHtml+='<tr>'+podSubtotalRow(sub)+'</tr>';
+    }
     const isDG=r.类型==='DG';
     const rowBg=isDG?'#FFF5F5':'#F0F7FF';
     const totBg=isDG?'#FADBD8':'#D6EAF8';
@@ -503,6 +535,12 @@ if(podMonths.length>0 && podRows.length>0){
     // 合计
     podHtml+=`<td class="num" style="${BORDER}background:${totBg};font-weight:700">${r['合计']||''}</td>`;
     podHtml+='</tr>';
+    prevType=r.类型;
+  }
+  // 循环结束后，如果是欧洲且有最后一个类型，插入小计
+  if(prevRegion==='欧洲' && prevType){
+    const sub=podGroups[prevRegion+'|'+prevType];
+    podHtml+='<tr>'+podSubtotalRow(sub)+'</tr>';
   }
   podBody.innerHTML=podHtml;
 }
