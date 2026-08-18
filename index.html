@@ -99,7 +99,8 @@
   <table class="kpi-table" id="demand-table-sl">
     <thead>
       <tr>
-        <th class="h-label">维度</th>
+        <th class="h-label">区域</th>
+        <th class="h-label">品类</th>
         <th class="h-act" id="th-sl-arrived">已到港</th>
         <th class="h-est" id="th-sl-transit">在途</th>
         <th class="h-tbd" id="th-sl-production">生产中</th>
@@ -246,15 +247,23 @@ document.getElementById('gen-time').textContent=DATA.generated_at;
   if(slm['在途'])document.getElementById('th-sl-transit').textContent='在途（'+slm['在途']+'）';
   if(slm['生产中'])document.getElementById('th-sl-production').textContent='生产中（'+slm['生产中']+'）';
   const sl=DATA.demand_by_group_shenlan||[];
+  const regionCounts={};
+  sl.forEach(g=>{const r=g.name.split('-')[0];regionCounts[r]=(regionCounts[r]||0)+1;});
   let html='';
+  let prevRegion='';
   sl.forEach(g=>{
+    const parts=g.name.split('-');
+    const region=parts[0];
+    const cat=parts.slice(1).join('-');
     const tot=g['已到港']+g['在途']+g['生产中'];
-    const unit=g.name.includes('逆变器')?'套':'台';
-    html+=`<tr><td class="row-label">${g.name}</td>`
+    const unit=cat.includes('逆变器')?'套':'台';
+    const regionCell=region!==prevRegion?`<td class="row-label" rowspan="${regionCounts[region]}" style="vertical-align:middle;font-size:15px">${region}</td>`:'';
+    html+=`<tr>${regionCell}<td class="row-label">${cat}</td>`
       +`<td class="v-act">${g['已到港'].toLocaleString()}<span class="unit">${unit}</span></td>`
       +`<td class="v-est">${g['在途'].toLocaleString()}<span class="unit">${unit}</span></td>`
       +`<td class="v-tbd">${g['生产中'].toLocaleString()}<span class="unit">${unit}</span></td>`
       +`<td class="row-label" style="font-size:18px">${tot.toLocaleString()}<span class="unit">${unit}</span></td></tr>`;
+    prevRegion=region;
   });
   document.getElementById('demand-tbody-sl').innerHTML=html;
 })();
