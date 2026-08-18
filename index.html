@@ -95,7 +95,7 @@
 </div>
 
 <div class="kpi-table-wrap" style="margin-bottom:14px">
-  <div style="font-size:15px;font-weight:700;color:#1F4E79;margin-bottom:6px">深蓝KPI达成情况 <span style="font-size:11px;font-weight:400;color:#C0504D">（仅限深蓝订单数据）</span></div>
+  <div style="font-size:15px;font-weight:700;color:#1F4E79;margin-bottom:6px">深蓝订单进展 <span style="font-size:11px;font-weight:400;color:#C0504D">（仅限深蓝订单数据）</span></div>
   <table class="kpi-table" id="demand-table-sl">
     <thead>
       <tr>
@@ -246,26 +246,15 @@ document.getElementById('gen-time').textContent=DATA.generated_at;
   if(slm['在途'])document.getElementById('th-sl-transit').textContent='在途（'+slm['在途']+'）';
   if(slm['生产中'])document.getElementById('th-sl-production').textContent='生产中（'+slm['生产中']+'）';
   const sl=DATA.demand_by_group_shenlan||[];
-  const rows=[
-    {label:'逆变器',arr:0,tra:0,pro:0,unit:'套'},
-    {label:'电池包',arr:0,tra:0,pro:0,unit:'台'},
-    {label:'工商储柜',arr:0,tra:0,pro:0,unit:'台'},
-  ];
-  sl.forEach(g=>{
-    rows.forEach(r=>{
-      if(g.name===r.label){
-        r.arr=g['已到港'];r.tra=g['在途'];r.pro=g['生产中'];
-      }
-    });
-  });
   let html='';
-  rows.forEach(r=>{
-    const tot=r.arr+r.tra+r.pro;
-    html+=`<tr><td class="row-label">${r.label}</td>`
-      +`<td class="v-act">${r.arr.toLocaleString()}<span class="unit">${r.unit}</span></td>`
-      +`<td class="v-est">${r.tra.toLocaleString()}<span class="unit">${r.unit}</span></td>`
-      +`<td class="v-tbd">${r.pro.toLocaleString()}<span class="unit">${r.unit}</span></td>`
-      +`<td class="row-label" style="font-size:18px">${tot.toLocaleString()}<span class="unit">${r.unit}</span></td></tr>`;
+  sl.forEach(g=>{
+    const tot=g['已到港']+g['在途']+g['生产中'];
+    const unit=g.name.includes('逆变器')?'套':'台';
+    html+=`<tr><td class="row-label">${g.name}</td>`
+      +`<td class="v-act">${g['已到港'].toLocaleString()}<span class="unit">${unit}</span></td>`
+      +`<td class="v-est">${g['在途'].toLocaleString()}<span class="unit">${unit}</span></td>`
+      +`<td class="v-tbd">${g['生产中'].toLocaleString()}<span class="unit">${unit}</span></td>`
+      +`<td class="row-label" style="font-size:18px">${tot.toLocaleString()}<span class="unit">${unit}</span></td></tr>`;
   });
   document.getElementById('demand-tbody-sl').innerHTML=html;
 })();
