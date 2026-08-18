@@ -256,7 +256,7 @@ document.getElementById('gen-time').textContent=DATA.generated_at;
     const region=parts[0];
     const cat=parts.slice(1).join('-');
     const tot=g['已到港']+g['在途']+g['生产中'];
-    const unit=cat.includes('逆变器')?'套':'台';
+    const unit='台';
     const regionCell=region!==prevRegion?`<td class="row-label" rowspan="${regionCounts[region]}" style="vertical-align:middle;font-size:15px">${region}</td>`:'';
     html+=`<tr>${regionCell}<td class="row-label">${cat}</td>`
       +`<td class="v-act">${g['已到港'].toLocaleString()}<span class="unit">${unit}</span></td>`
