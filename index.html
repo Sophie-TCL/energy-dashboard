@@ -76,6 +76,10 @@
   .supply-table th:nth-child(2),.supply-table td:nth-child(2){position:sticky;left:120px;z-index:1;min-width:120px}
   .supply-table th:nth-child(3),.supply-table td:nth-child(3){position:sticky;left:240px;z-index:1;min-width:60px}
   .supply-table .subtotal td{font-weight:700;background:#E8E4F0}
+  .supply-table .month-ordered{background:#D1FAE5}
+  .supply-table .month-forecast{background:#FEF3C7}
+  .supply-table .subtotal .month-ordered{background:#A7F3D0}
+  .supply-table .subtotal .month-forecast{background:#FDE68A}
 </style>
 </head>
 <body>
@@ -247,7 +251,8 @@ function switchTab(tab){
       html+=`<td style="font-weight:700">${r.total}</td>`;
       for(let m=1;m<=12;m++){
         const v=r.months[m]||0;
-        html+=`<td>${v||''}</td>`;
+        const cls=m<=orderedMax?'month-ordered':'month-forecast';
+        html+=`<td class="${cls}">${v||''}</td>`;
       }
       html+=`</tr>`;
     });
@@ -263,7 +268,8 @@ function switchTab(tab){
     html+=`<tr class="subtotal"><td colspan="2" style="text-align:right">Sub Total</td>`;
     html+=`<td>${grandTotal}</td>`;
     for(let m=1;m<=12;m++){
-      html+=`<td>${monthSums[m-1]||''}</td>`;
+      const cls=m<=orderedMax?'month-ordered':'month-forecast';
+      html+=`<td class="${cls}">${monthSums[m-1]||''}</td>`;
     }
     html+=`</tr>`;
     html+=`</tbody></table></div></div>`;
