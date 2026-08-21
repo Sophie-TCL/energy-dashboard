@@ -237,8 +237,10 @@ function switchTab(tab){
   const monNames=['','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
   let html='';
   sd.suppliers.forEach((s,idx)=>{
+    const supColors={'为恒':'#16a34a','深蓝':'#1F4E79','固德威':'#dc2626'};
+    const supColor=supColors[s.name]||'#1F4E79';
     html+=`<div class="supply-section">`;
-    html+=`<div class="supply-title">${s.name}（${s.brand}）2026订单&预测</div>`;
+    html+=`<div class="supply-title" style="color:${supColor}">${s.name}（${s.brand}）2026订单&预测</div>`;
     html+=`<div class="supply-note">绿色月份：表示已下单；黄色月份：表示预测</div>`;
     html+=`<div class="supply-table-wrap"><table class="supply-table"><thead><tr>`;
     html+=`<th>Description</th><th>Product Model</th><th>Total</th>`;
