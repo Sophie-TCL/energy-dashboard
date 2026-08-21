@@ -70,17 +70,12 @@
   .supply-note{font-size:12px;color:#6B7280;margin-bottom:8px}
   .supply-table-wrap{overflow-x:auto;max-height:500px;overflow-y:auto;position:sticky;top:0}
   .supply-table{border-collapse:separate;border-spacing:0;font-size:12px;white-space:nowrap}
-  .supply-table th,.supply-table td{padding:4px 8px;text-align:center;border:1px solid #D1D5DB}
+  .supply-table th,.supply-table td{padding:4px 8px;text-align:center;border:1px solid #D1D5DB;color:#1F4E79}
   .supply-table th{background:#1F4E79;color:#fff;font-weight:600;position:sticky;top:0;z-index:2}
-  .supply-table th:first-child,.supply-table td:first-child{position:sticky;left:0;z-index:1;min-width:100px;background:#D9E1F2}
-  .supply-table th:nth-child(2),.supply-table td:nth-child(2){position:sticky;left:100px;z-index:1;min-width:120px;background:#D9E1F2}
-  .supply-table th:nth-child(3),.supply-table td:nth-child(3){position:sticky;left:220px;z-index:1;min-width:120px;background:#D9E1F2}
-  .supply-table th:nth-child(4),.supply-table td:nth-child(4){position:sticky;left:340px;z-index:1;min-width:60px;background:#1F4E79;color:#fff;font-weight:700}
-  .supply-table .month-ordered{background:#D1FAE5}
-  .supply-table .month-forecast{background:#FEF3C7}
-  .supply-table .subtotal td{font-weight:700;background:#DBEAFE}
-  .supply-table .subtotal td:nth-child(4){background:#1F4E79;color:#fff}
-  .supply-table .supplier-merged{font-weight:700;background:#D9E1F2;vertical-align:middle;text-align:center;font-size:14px}
+  .supply-table th:first-child,.supply-table td:first-child{position:sticky;left:0;z-index:1;min-width:120px}
+  .supply-table th:nth-child(2),.supply-table td:nth-child(2){position:sticky;left:120px;z-index:1;min-width:120px}
+  .supply-table th:nth-child(3),.supply-table td:nth-child(3){position:sticky;left:240px;z-index:1;min-width:60px}
+  .supply-table .subtotal td{font-weight:700;background:#E8E4F0}
 </style>
 </head>
 <body>
@@ -238,31 +233,25 @@ function switchTab(tab){
   const monNames=['','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
   let html='';
   sd.suppliers.forEach((s,idx)=>{
-    const rowCount=s.rows.length;
     html+=`<div class="supply-section">`;
     html+=`<div class="supply-title">${s.name}（${s.brand}）2026订单&预测</div>`;
     html+=`<div class="supply-note">绿色月份：表示已下单；黄色月份：表示预测</div>`;
     html+=`<div class="supply-table-wrap"><table class="supply-table"><thead><tr>`;
-    html+=`<th>Supplier</th><th>Description</th><th>Product Model</th><th>Total</th>`;
+    html+=`<th>Description</th><th>Product Model</th><th>Total</th>`;
     for(let m=1;m<=12;m++)html+=`<th>${monNames[m]}</th>`;
     html+=`</tr></thead><tbody>`;
-    s.rows.forEach((r,ri)=>{
+    s.rows.forEach(r=>{
       html+=`<tr>`;
-      // 供应商名称合并：第一行输出rowspan
-      if(ri===0){
-        html+=`<td class="supplier-merged" rowspan="${rowCount}">${s.name}</td>`;
-      }
       html+=`<td style="text-align:left">${r.desc}</td>`;
       html+=`<td style="text-align:left;font-weight:600">${r.model}</td>`;
       html+=`<td style="font-weight:700">${r.total}</td>`;
       for(let m=1;m<=12;m++){
         const v=r.months[m]||0;
-        const cls=m<=orderedMax?'month-ordered':'month-forecast';
-        html+=`<td class="${cls}">${v||''}</td>`;
+        html+=`<td>${v||''}</td>`;
       }
       html+=`</tr>`;
     });
-    // Sub Total行：Total列放总计，月份列放各月小计
+    // Sub Total行
     let grandTotal=0;
     let monthSums=[];
     for(let m=1;m<=12;m++){
@@ -271,11 +260,10 @@ function switchTab(tab){
       monthSums.push(sum);
       grandTotal+=sum;
     }
-    html+=`<tr class="subtotal"><td colspan="3" style="text-align:right">Sub Total</td>`;
+    html+=`<tr class="subtotal"><td colspan="2" style="text-align:right">Sub Total</td>`;
     html+=`<td>${grandTotal}</td>`;
     for(let m=1;m<=12;m++){
-      const cls=m<=orderedMax?'month-ordered':'month-forecast';
-      html+=`<td class="${cls}">${monthSums[m-1]||''}</td>`;
+      html+=`<td>${monthSums[m-1]||''}</td>`;
     }
     html+=`</tr>`;
     html+=`</tbody></table></div></div>`;
