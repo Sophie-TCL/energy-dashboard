@@ -630,7 +630,7 @@ if(podMonths.length>0 && podRows.length>0){
 let n='';
 if(DATA.pending_tbd>0)n+=`📌 待排定 ${DATA.pending_tbd.toLocaleString()} 台，无预计ETR，不包含在表一表二统计，包含在KPI数据中，待供应商确认提货计划后纳入统计。<br>`;
 if((DATA.offshore||{}).grand_total>0)n+=`📋 Offshore数据 ${DATA.offshore.grand_total.toLocaleString()} 台已单独展示（直发欧洲客户，未计入主表合计）。<br>`;
-if(DATA.pending_etrfill>0)n+=`⚠️ 待补ETR ${DATA.pending_etrfill.toLocaleString()} 台：ODP中26AUG006等行无日期，需在ODP源补全ETR后重跑(26AUG006的ETR=2026-08-11)。`;
+if(DATA.pending_etrfill>0)n+=`⚠️ 待补ETR ${DATA.pending_etrfill.toLocaleString()} 台：ODP中部分深蓝订单无ETR，需补全后纳入统计。`;
 document.getElementById('note').innerHTML=n;
 </script>
 </body>
