@@ -76,10 +76,8 @@
   .supply-table th:nth-child(2),.supply-table td:nth-child(2){position:sticky;left:120px;z-index:1;min-width:120px}
   .supply-table th:nth-child(3),.supply-table td:nth-child(3){position:sticky;left:240px;z-index:1;min-width:60px}
   .supply-table .subtotal td{font-weight:700;background:#E8E4F0}
-  .supply-table .month-ordered{background:#D1FAE5}
-  .supply-table .month-forecast{background:#FEF3C7}
-  .supply-table .subtotal .month-ordered{background:#A7F3D0}
-  .supply-table .subtotal .month-forecast{background:#FDE68A}
+  .supply-table th.month-ordered{background:#16a34a;color:#fff}
+  .supply-table th.month-forecast{background:#f59e0b;color:#fff}
 </style>
 </head>
 <body>
@@ -240,11 +238,14 @@ function switchTab(tab){
     const supColors={'为恒':'#16a34a','深蓝':'#1F4E79','固德威':'#dc2626'};
     const supColor=supColors[s.name]||'#1F4E79';
     html+=`<div class="supply-section">`;
-    html+=`<div class="supply-title" style="color:${supColor}">${s.name}（${s.brand}）2026订单&预测</div>`;
+    html+=`<div class="supply-title"><span style="color:${supColor}">${s.name}</span><span style="color:#6B7280">（${s.brand}）2026订单&预测</span></div>`;
     html+=`<div class="supply-note">绿色月份：表示已下单；黄色月份：表示预测</div>`;
     html+=`<div class="supply-table-wrap"><table class="supply-table"><thead><tr>`;
     html+=`<th>Description</th><th>Product Model</th><th>Total</th>`;
-    for(let m=1;m<=12;m++)html+=`<th>${monNames[m]}</th>`;
+    for(let m=1;m<=12;m++){
+      const cls=m<=orderedMax?'month-ordered':'month-forecast';
+      html+=`<th class="${cls}">${monNames[m]}</th>`;
+    }
     html+=`</tr></thead><tbody>`;
     s.rows.forEach(r=>{
       html+=`<tr>`;
@@ -253,8 +254,7 @@ function switchTab(tab){
       html+=`<td style="font-weight:700">${r.total}</td>`;
       for(let m=1;m<=12;m++){
         const v=r.months[m]||0;
-        const cls=m<=orderedMax?'month-ordered':'month-forecast';
-        html+=`<td class="${cls}">${v||''}</td>`;
+        html+=`<td>${v||''}</td>`;
       }
       html+=`</tr>`;
     });
@@ -270,8 +270,7 @@ function switchTab(tab){
     html+=`<tr class="subtotal"><td colspan="2" style="text-align:right">Sub Total</td>`;
     html+=`<td>${grandTotal}</td>`;
     for(let m=1;m<=12;m++){
-      const cls=m<=orderedMax?'month-ordered':'month-forecast';
-      html+=`<td class="${cls}">${monthSums[m-1]||''}</td>`;
+      html+=`<td>${monthSums[m-1]||''}</td>`;
     }
     html+=`</tr>`;
     html+=`</tbody></table></div></div>`;
