@@ -651,8 +651,8 @@ if(podMonths.length>0 && podRows.length>0){
   // 渲染小计行的函数（合计列加深，其他列用行背景色）
   function podSubtotalRow(group){
     const isDG=group.类型==='DG';
-    const subBg=isDG?'#F2C9CD':'#D9E1F2';
-    const subTotBg=isDG?'#E8A0A8':'#B4C6E7';
+    const subBg='#D9E1F2';
+    const subTotBg=isDG?'#F2C9CD':'#B4C6E7';
     let h=`<td style="${BORDER}background:${subBg};text-align:center;font-weight:700;white-space:nowrap">小计</td>`;
     h+=`<td style="${BORDER}background:${subBg}"></td>`;
     podMonths.forEach(m=>{
@@ -682,7 +682,7 @@ if(podMonths.length>0 && podRows.length>0){
       typeRendered=false;
     }
     const isDG=r.类型==='DG';
-    const rowBg=isDG?'#F2C9CD':'#D9E1F2';
+    const rowBg='#D9E1F2';
     podHtml+='<tr>';
     // 区域列（rowspan）
     if(r.区域!==prevRegion){
