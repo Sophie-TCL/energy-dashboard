@@ -653,8 +653,7 @@ if(podMonths.length>0 && podRows.length>0){
     const isDG=group.类型==='DG';
     const subBg='#D9E1F2';
     const subTotBg=isDG?'#F2C9CD':'#B4C6E7';
-    let h=`<td style="${BORDER}background:${subBg};text-align:center;font-weight:700;white-space:nowrap">小计</td>`;
-    h+=`<td style="${BORDER}background:${subBg}"></td>`;
+    let h=`<td colspan="2" style="${BORDER}background:${subBg};text-align:center;font-weight:700;white-space:nowrap">小计</td>`;
     podMonths.forEach(m=>{
       const v=group.months[m]||0;
       h+=`<td style="${BORDER}background:${subBg};text-align:center;font-weight:700;${v?'color:#1F2937':'color:#999'}">${v||'-'}</td>`;
