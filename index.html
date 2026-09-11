@@ -401,11 +401,11 @@ const leaderLinePlugin={
       items.push({
         i,v,cos,sin,right:cos>=0,
         x0:arc.x+cos*(r+3),  y0:arc.y+sin*(r+3),
-        x1:arc.x+cos*(r+14), y1:arc.y+sin*(r+14),
+        x1:arc.x+cos*(r+22), y1:arc.y+sin*(r+22),
       });
     });
-    // 防重叠：同侧标签最小垂直间距30px（两行文字高度），自上而下推挤
-    const GAP=30;
+    // 防重叠：同侧标签最小垂直间距34px（两行文字高度），自上而下推挤
+    const GAP=34;
     [true,false].forEach(side=>{
       const g=items.filter(it=>it.right===side).sort((a,b)=>a.y1-b.y1);
       let prev=null;
@@ -425,9 +425,9 @@ const leaderLinePlugin={
     });
     items.forEach(it=>{
       const x1=it.x1,y1=it.y1;
-      // 水平段固定短长度（34px）；上下方扇区(│cos│小)需保证标签起点在半径外，避免文字压饼图
+      // 水平段（42px）；上下方扇区(│cos│小)需保证标签起点在半径外，避免文字压饼图
       const cx=meta.data[0].x,r0=meta.data[0].outerRadius;
-      const xe=it.right?Math.max(x1+34,cx+r0+44):Math.min(x1-34,cx-r0-44);
+      const xe=it.right?Math.max(x1+42,cx+r0+52):Math.min(x1-42,cx-r0-52);
       const col=CAT_COLORS[it.i%CAT_COLORS.length];
       // 折线（扇区颜色）
       ctx.save();
@@ -451,9 +451,9 @@ const leaderLinePlugin={
 };
 new Chart(document.getElementById('chart-pie'),{type:'doughnut',
   data:{labels:cm.map(c=>c.category),datasets:[{data:cm.map(c=>c.total),backgroundColor:CAT_COLORS,borderWidth:2,borderColor:'#fff'}]},
-  options:{responsive:true,maintainAspectRatio:false,cutout:'46%',radius:'62%',
+  options:{responsive:true,maintainAspectRatio:false,cutout:'46%',radius:'56%',
     layout:{padding:{left:6,right:6,top:4,bottom:4}},
-    plugins:{legend:{display:false},
+    plugins:{legend:{position:'right',labels:{boxWidth:10,boxHeight:10,padding:8,font:{size:11}}},
     tooltip:{callbacks:{label:c=>c.label+': '+c.parsed.toLocaleString()+' 台 ('+(c.parsed/DATA.totals['合计']*100).toFixed(1)+'%)'}}}},
   plugins:[leaderLinePlugin]});
 
