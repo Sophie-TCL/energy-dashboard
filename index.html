@@ -624,7 +624,7 @@ ktBody.innerHTML=kitHtml;
 // 10/8新增：表一供应商拆分tooltip（跟随鼠标的深色气泡）
 let supTipEl=document.getElementById('sup-tip');
 if(!supTipEl){supTipEl=document.createElement('div');supTipEl.id='sup-tip';document.body.appendChild(supTipEl);}
-supTipEl.style.cssText='position:fixed;display:none;z-index:9999;background:#1F2937;color:#fff;padding:6px 12px;border-radius:6px;font-size:12px;pointer-events:none;box-shadow:0 4px 12px rgba(0,0,0,.28);white-space:nowrap;font-weight:600';
+supTipEl.style.cssText='position:fixed;display:none;z-index:9999;background:#1F4E79;color:#fff;padding:6px 12px;border-radius:6px;font-size:12px;pointer-events:none;box-shadow:0 4px 12px rgba(31,78,121,.35);white-space:nowrap;font-weight:600';
 ktBody.addEventListener('mouseover',e=>{const t=e.target.closest('td[data-sup]');if(t){supTipEl.textContent=t.dataset.sup;supTipEl.style.display='block';}});
 ktBody.addEventListener('mousemove',e=>{if(supTipEl.style.display==='block'){const x=Math.min(e.clientX+14,window.innerWidth-supTipEl.offsetWidth-8);const y=Math.max(e.clientY-supTipEl.offsetHeight-12,8);supTipEl.style.left=x+'px';supTipEl.style.top=y+'px';}});
 ktBody.addEventListener('mouseout',e=>{if(e.target.closest('td[data-sup]'))supTipEl.style.display='none';});
